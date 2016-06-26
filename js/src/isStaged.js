@@ -11,7 +11,7 @@ module.exports = function(modulePath) {
   return getStatus({
     modulePath: modulePath
   }).then(function(status) {
-    return !hasKeys(status.staged);
+    return hasKeys(status.staged);
   });
 };
 

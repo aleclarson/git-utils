@@ -1,36 +1,40 @@
-var OneOf, assertClean, assertTypes, changeBranch, exec, optionTypes;
+var Maybe, MergeStrategy, OneOf, assertClean, assertTypes, exec, optionTypes, setBranch;
 
 assertTypes = require("assertTypes");
 
 OneOf = require("OneOf");
 
+Maybe = require("Maybe");
+
 exec = require("exec");
 
-changeBranch = require("./changeBranch");
+MergeStrategy = require("./MergeStrategy");
+
+setBranch = require("./setBranch");
 
 assertClean = require("./assertClean");
 
 optionTypes = {
   modulePath: String,
-  fromBranch: String,
-  toBranch: String.Maybe,
-  force: Boolean.Maybe
+  ours: String.Maybe,
+  theirs: String,
+  strategy: Maybe(MergeStrategy)
 };
 
 module.exports = function(options) {
-  var force, fromBranch, modulePath, toBranch;
+  var modulePath, ours, strategy, theirs;
   assertTypes(options, optionTypes);
-  modulePath = options.modulePath, fromBranch = options.fromBranch, toBranch = options.toBranch, force = options.force;
+  modulePath = options.modulePath, ours = options.ours, theirs = options.theirs, strategy = options.strategy;
   return assertClean(modulePath).then(function() {
-    if (!toBranch) {
+    if (!ours) {
       return;
     }
-    return changeBranch(modulePath, toBranch);
+    return setBranch(modulePath, ours);
   }).then(function() {
     var args;
-    args = [fromBranch, "--no-commit"];
-    if (force) {
-      args.push("-X", "theirs");
+    args = [theirs, "--no-commit"];
+    if (strategy) {
+      args.push("-X", strategy);
     }
     return exec("git merge", args, {
       cwd: modulePath

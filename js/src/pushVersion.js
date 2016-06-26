@@ -1,4 +1,4 @@
-var Path, addCommit, addTag, assert, assertStaged, assertTypes, exec, findVersion, log, optionTypes, pushChanges, pushTags, removeTag, semver, stageAll, undoLatestCommit;
+var Path, addCommit, addTag, assert, assertStaged, assertTypes, exec, findVersion, log, optionTypes, popCommit, pushHead, pushTags, removeTag, semver, stageAll;
 
 assertTypes = require("assertTypes");
 
@@ -12,19 +12,19 @@ exec = require("exec");
 
 log = require("log");
 
-undoLatestCommit = require("./undoLatestCommit");
-
 assertStaged = require("./assertStaged");
 
 findVersion = require("./findVersion");
-
-pushChanges = require("./pushChanges");
 
 removeTag = require("./removeTag");
 
 addCommit = require("./addCommit");
 
+popCommit = require("./popCommit");
+
 stageAll = require("./stageAll");
+
+pushHead = require("./pushHead");
 
 pushTags = require("./pushTags");
 
@@ -57,7 +57,7 @@ module.exports = function(options) {
     if (index !== versions.length - 1) {
       throw Error("Can only overwrite the most recent version!");
     }
-    return undoLatestCommit(modulePath);
+    return popCommit(modulePath);
   }).then(function() {
     message = version + (message ? log.ln + message : "");
     return addCommit(modulePath, message);
@@ -68,7 +68,7 @@ module.exports = function(options) {
       force: force
     });
   }).then(function() {
-    return pushChanges({
+    return pushHead({
       modulePath: modulePath,
       remoteName: remoteName,
       force: force
@@ -81,7 +81,7 @@ module.exports = function(options) {
     });
   }).fail(function(error) {
     if (/^fatal: The current branch [^\s]+ has no upstream branch/.test(error.message)) {
-      return pushChanges({
+      return pushHead({
         modulePath: modulePath,
         remoteName: remoteName,
         force: force,
@@ -96,7 +96,7 @@ module.exports = function(options) {
     }
     throw error;
   }).fail(function(error) {
-    return undoLatestCommit(modulePath).then(function() {
+    return popCommit(modulePath).then(function() {
       return removeTag(modulePath, version);
     }).then(function() {
       throw error;

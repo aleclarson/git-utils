@@ -6,13 +6,13 @@ Path = require "path"
 exec = require "exec"
 log = require "log"
 
-undoLatestCommit = require "./undoLatestCommit"
 assertStaged = require "./assertStaged"
 findVersion = require "./findVersion"
-pushChanges = require "./pushChanges"
 removeTag = require "./removeTag"
 addCommit = require "./addCommit"
+popCommit = require "./popCommit"
 stageAll = require "./stageAll"
+pushHead = require "./pushHead"
 pushTags = require "./pushTags"
 addTag = require "./addTag"
 
@@ -46,7 +46,7 @@ module.exports = (options) ->
     if index isnt versions.length - 1
       throw Error "Can only overwrite the most recent version!"
 
-    undoLatestCommit modulePath
+    popCommit modulePath
 
   .then ->
 
@@ -60,7 +60,7 @@ module.exports = (options) ->
     addTag { modulePath, tagName: version, force }
 
   .then ->
-    pushChanges { modulePath, remoteName, force }
+    pushHead { modulePath, remoteName, force }
 
   .then ->
     pushTags { modulePath, remoteName, force }
@@ -69,15 +69,15 @@ module.exports = (options) ->
 
     # Force an upstream branch to exist. Is this possibly dangerous?
     if /^fatal: The current branch [^\s]+ has no upstream branch/.test error.message
-      return pushChanges { modulePath, remoteName, force, upstream: yes }
+      return pushHead { modulePath, remoteName, force, upstream: yes }
       .then -> pushTags { modulePath, remoteName, force }
 
     throw error
 
-  # In case 'pushChanges' fails again, we need a separate 'onRejected' handler.
+  # In case 'pushHead' fails again, we need a separate 'onRejected' handler.
   .fail (error) ->
 
-    undoLatestCommit modulePath
+    popCommit modulePath
 
     .then ->
       removeTag modulePath, version

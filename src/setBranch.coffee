@@ -3,9 +3,10 @@ assertTypes = require "assertTypes"
 isType = require "isType"
 exec = require "exec"
 
-getBranch = require "./getBranch"
-hasChanges = require "./hasChanges"
-hasBranch = require "./hasBranch"
+git =
+  getBranch: require "./getBranch"
+  hasBranch: require "./hasBranch"
+  isClean: require "./isClean"
 
 optionTypes =
   modulePath: String
@@ -23,21 +24,21 @@ module.exports = (options) ->
 
   { modulePath, branchName, force } = options
 
-  getBranch modulePath
+  git.getBranch modulePath
 
   .then (currentBranch) ->
 
     if currentBranch is branchName
       return currentBranch
 
-    hasChanges { modulePath }
+    git.isClean modulePath
 
-    .then (hasChanges) ->
+    .then (clean) ->
 
-      if hasChanges
+      if not clean
         throw Error "The current branch has uncommitted changes!"
 
-      hasBranch { modulePath, branchName }
+      git.hasBranch { modulePath, branchName }
 
     .then (branchExists) ->
 

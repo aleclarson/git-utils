@@ -6,9 +6,6 @@ define exports,
   addBranch: lazy: ->
     require "./addBranch"
 
-  addCommit: lazy: ->
-    require "./addCommit"
-
   addTag: lazy: ->
     require "./addTag"
 
@@ -21,11 +18,14 @@ define exports,
   assertStaged: lazy: ->
     require "./assertStaged"
 
-  changeBranch: lazy: ->
-    require "./changeBranch"
+  blame: lazy: ->
+    require "./blame"
 
   diff: lazy: ->
     require "./diff"
+
+  findConflicts: lazy: ->
+    require "./findConflicts"
 
   findVersion: lazy: ->
     require "./findVersion"
@@ -33,11 +33,11 @@ define exports,
   getBranches: lazy: ->
     require "./getBranches"
 
-  getCurrentBranch: lazy: ->
-    require "./getCurrentBranch"
+  getBranch: lazy: ->
+    require "./getBranch"
 
-  getLatestCommit: lazy: ->
-    require "./getLatestCommit"
+  getHead: lazy: ->
+    require "./getHead"
 
   getRemotes: lazy: ->
     require "./getRemotes"
@@ -54,23 +54,35 @@ define exports,
   hasBranch: lazy: ->
     require "./hasBranch"
 
-  hasChanges: lazy: ->
-    require "./hasChanges"
+  isClean: lazy: ->
+    require "./isClean"
 
   isRepo: lazy: ->
     require "./isRepo"
 
+  isStaged: lazy: ->
+    require "./isStaged"
+
   mergeBranch: lazy: ->
     require "./mergeBranch"
+
+  mergeFiles: lazy: ->
+    require "./mergeFiles"
 
   pick: lazy: ->
     require "./pick"
 
+  popCommit: lazy: ->
+    require "./popCommit"
+
   popStash: lazy: ->
     require "./popStash"
 
-  pushChanges: lazy: ->
-    require "./pushChanges"
+  pushCommit: lazy: ->
+    require "./pushCommit"
+
+  pushHead: lazy: ->
+    require "./pushHead"
 
   pushStash: lazy: ->
     require "./pushStash"
@@ -84,14 +96,26 @@ define exports,
   removeBranch: lazy: ->
     require "./removeBranch"
 
+  removeFile: lazy: ->
+    require "./removeFile"
+
   removeTag: lazy: ->
     require "./removeTag"
 
+  renameFile: lazy: ->
+    require "./renameFile"
+
+  resetFile: lazy: ->
+    require "./resetFile"
+
+  setBranch: lazy: ->
+    require "./setBranch"
+
+  setHead: lazy: ->
+    require "./setHead"
+
   stageAll: lazy: ->
     require "./stageAll"
-
-  undoLatestCommit: lazy: ->
-    require "./undoLatestCommit"
 
   unstageAll: lazy: ->
     require "./unstageAll"

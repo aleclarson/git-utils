@@ -1,4 +1,4 @@
-var assertTypes, exec, getBranch, hasBranch, hasChanges, isType, optionTypes;
+var assertTypes, exec, git, isType, optionTypes;
 
 assertTypes = require("assertTypes");
 
@@ -6,11 +6,11 @@ isType = require("isType");
 
 exec = require("exec");
 
-getBranch = require("./getBranch");
-
-hasChanges = require("./hasChanges");
-
-hasBranch = require("./hasBranch");
+git = {
+  getBranch: require("./getBranch"),
+  hasBranch: require("./hasBranch"),
+  isClean: require("./isClean")
+};
 
 optionTypes = {
   modulePath: String,
@@ -28,17 +28,15 @@ module.exports = function(options) {
   }
   assertTypes(options, optionTypes);
   modulePath = options.modulePath, branchName = options.branchName, force = options.force;
-  return getBranch(modulePath).then(function(currentBranch) {
+  return git.getBranch(modulePath).then(function(currentBranch) {
     if (currentBranch === branchName) {
       return currentBranch;
     }
-    return hasChanges({
-      modulePath: modulePath
-    }).then(function(hasChanges) {
-      if (hasChanges) {
+    return git.isClean(modulePath).then(function(clean) {
+      if (!clean) {
         throw Error("The current branch has uncommitted changes!");
       }
-      return hasBranch({
+      return git.hasBranch({
         modulePath: modulePath,
         branchName: branchName
       });

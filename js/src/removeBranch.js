@@ -1,6 +1,8 @@
-var assertTypes, exec, optionTypes;
+var assertTypes, exec, isType, optionTypes;
 
 assertTypes = require("assertTypes");
+
+isType = require("isType");
 
 exec = require("exec");
 
@@ -32,6 +34,10 @@ module.exports = function(options) {
     });
   }).fail(function(error) {
     var expected, lines;
+    expected = "error: branch '" + branchName + "' not found.";
+    if (error.message === expected) {
+      throw Error("The given branch does not exist!");
+    }
     expected = "error: Cannot delete the branch '" + branchName + "' which you are currently on.";
     if (error.message === expected) {
       throw Error("Cannot delete the current branch!");

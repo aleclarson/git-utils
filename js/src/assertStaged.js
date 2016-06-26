@@ -1,14 +1,13 @@
-var hasChanges;
+var isStaged;
 
-hasChanges = require("./hasChanges");
+isStaged = require("./isStaged");
 
 module.exports = function(modulePath) {
-  return hasChanges(modulePath, {
-    group: "staged"
-  }).then(function(hasStagedChanges) {
-    if (!hasStagedChanges) {
-      throw Error("No changes are staged!");
+  return isStaged(modulePath).then(function(staged) {
+    if (staged) {
+      return;
     }
+    throw Error("No changes are staged!");
   });
 };
 

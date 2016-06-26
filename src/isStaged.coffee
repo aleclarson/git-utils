@@ -7,4 +7,4 @@ getStatus = require "./getStatus"
 module.exports = (modulePath) ->
   assertType modulePath, String
   getStatus { modulePath }
-  .then (status) -> not hasKeys status.staged
+  .then (status) -> hasKeys status.staged

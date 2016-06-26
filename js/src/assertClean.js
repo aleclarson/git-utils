@@ -1,33 +1,31 @@
-var Path, assertType, exec, getCurrentBranch, hasChanges, log, pushStash;
+var assertType, exec, git, log, prompt;
 
 assertType = require("assertType");
 
-Path = require("path");
+prompt = require("prompt");
 
 exec = require("exec");
 
 log = require("log");
 
-getCurrentBranch = require("./getCurrentBranch");
-
-hasChanges = require("./hasChanges");
-
-pushStash = require("./pushStash");
+git = {
+  getBranch: require("./getBranch"),
+  isClean: require("./isClean"),
+  pushStash: require("./pushStash")
+};
 
 module.exports = function(modulePath) {
   assertType(modulePath, String);
-  return hasChanges({
-    modulePath: modulePath
-  }).then(function(hasChanges) {
-    if (!hasChanges) {
+  return git.isClean(modulePath).then(function(clean) {
+    if (clean) {
       return;
     }
-    return getCurrentBranch(modulePath).then(function(branchName) {
+    return git.getBranch(modulePath).then(function(branchName) {
       var moduleName, shouldStash;
       if (branchName === null) {
         throw Error("An initial commit must exist!");
       }
-      moduleName = Path.relative(lotus.path, modulePath);
+      moduleName = lotus.relative(modulePath);
       log.moat(1);
       log.red(moduleName + "/" + branchName);
       log.white(" has uncommitted changes!");
@@ -42,7 +40,7 @@ module.exports = function(modulePath) {
       if (!shouldStash) {
         throw Error("The current branch has uncommitted changes!");
       }
-      return pushStash(modulePath);
+      return git.pushStash(modulePath);
     });
   });
 };

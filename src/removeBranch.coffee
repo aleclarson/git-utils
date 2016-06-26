@@ -1,5 +1,6 @@
 
 assertTypes = require "assertTypes"
+isType = require "isType"
 exec = require "exec"
 
 optionTypes =
@@ -28,6 +29,10 @@ module.exports = (options) ->
     exec "git push #{remoteName} --delete #{branchName}", cwd: modulePath
 
   .fail (error) ->
+
+    expected = "error: branch '#{branchName}' not found."
+    if error.message is expected
+      throw Error "The given branch does not exist!"
 
     expected = "error: Cannot delete the branch '#{branchName}' which you are currently on."
     if error.message is expected

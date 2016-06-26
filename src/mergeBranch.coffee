@@ -1,32 +1,34 @@
 
 assertTypes = require "assertTypes"
 OneOf = require "OneOf"
+Maybe = require "Maybe"
 exec = require "exec"
 
-changeBranch = require "./changeBranch"
+MergeStrategy = require "./MergeStrategy"
+setBranch = require "./setBranch"
 assertClean = require "./assertClean"
 
 optionTypes =
   modulePath: String
-  fromBranch: String
-  toBranch: String.Maybe
-  force: Boolean.Maybe
+  ours: String.Maybe
+  theirs: String
+  strategy: Maybe MergeStrategy
 
 module.exports = (options) ->
 
   assertTypes options, optionTypes
 
-  { modulePath, fromBranch, toBranch, force } = options
+  { modulePath, ours, theirs, strategy } = options
 
   assertClean modulePath
 
   .then ->
-    return if not toBranch
-    changeBranch modulePath, toBranch
+    return if not ours
+    setBranch modulePath, ours
 
   .then ->
-    args = [ fromBranch, "--no-commit" ]
-    args.push "-X", "theirs" if force
+    args = [ theirs, "--no-commit" ]
+    args.push "-X", strategy if strategy
     exec "git merge", args, cwd: modulePath
 
   # TODO: Fail gracefully if the merge was empty.

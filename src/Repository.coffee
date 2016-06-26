@@ -22,8 +22,8 @@ type.defineMethods
   addBranch: (branchName) ->
     git.addBranch { @modulePath, branchName }
 
-  addCommit: (message) ->
-    git.addCommit { @modulePath, message }
+  pushCommit: (message) ->
+    git.pushCommit { @modulePath, message }
 
   addTag: (tagName, force) ->
     git.addTag { @modulePath, tagName, force }

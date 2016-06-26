@@ -1,11 +1,8 @@
 
-hasChanges = require "./hasChanges"
+isStaged = require "./isStaged"
 
 module.exports = (modulePath) ->
-
-  hasChanges modulePath, { group: "staged" }
-
-  .then (hasStagedChanges) ->
-
-    if not hasStagedChanges
-      throw Error "No changes are staged!"
+  isStaged modulePath
+  .then (staged) ->
+    return if staged
+    throw Error "No changes are staged!"

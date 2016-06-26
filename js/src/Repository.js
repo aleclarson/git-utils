@@ -29,8 +29,8 @@ type.defineMethods({
       branchName: branchName
     });
   },
-  addCommit: function(message) {
-    return git.addCommit({
+  pushCommit: function(message) {
+    return git.pushCommit({
       modulePath: this.modulePath,
       message: message
     });

@@ -1,31 +1,32 @@
 
 assertType = require "assertType"
-Path = require "path"
+prompt = require "prompt"
 exec = require "exec"
 log = require "log"
 
-getCurrentBranch = require "./getCurrentBranch"
-hasChanges = require "./hasChanges"
-pushStash = require "./pushStash"
+git =
+  getBranch: require "./getBranch"
+  isClean: require "./isClean"
+  pushStash: require "./pushStash"
 
 module.exports = (modulePath) ->
 
   assertType modulePath, String
 
-  hasChanges { modulePath }
+  git.isClean modulePath
 
-  .then (hasChanges) ->
+  .then (clean) ->
 
-    return if not hasChanges
+    return if clean
 
-    getCurrentBranch modulePath
+    git.getBranch modulePath
 
     .then (branchName) ->
 
       if branchName is null
         throw Error "An initial commit must exist!"
 
-      moduleName = Path.relative lotus.path, modulePath
+      moduleName = lotus.relative modulePath
       log.moat 1
       log.red moduleName + "/" + branchName
       log.white " has uncommitted changes!"
@@ -41,4 +42,4 @@ module.exports = (modulePath) ->
       if not shouldStash
         throw Error "The current branch has uncommitted changes!"
 
-      pushStash modulePath
+      git.pushStash modulePath

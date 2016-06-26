@@ -8,11 +8,6 @@ define(exports, {
       return require("./addBranch");
     }
   },
-  addCommit: {
-    lazy: function() {
-      return require("./addCommit");
-    }
-  },
   addTag: {
     lazy: function() {
       return require("./addTag");
@@ -33,14 +28,19 @@ define(exports, {
       return require("./assertStaged");
     }
   },
-  changeBranch: {
+  blame: {
     lazy: function() {
-      return require("./changeBranch");
+      return require("./blame");
     }
   },
   diff: {
     lazy: function() {
       return require("./diff");
+    }
+  },
+  findConflicts: {
+    lazy: function() {
+      return require("./findConflicts");
     }
   },
   findVersion: {
@@ -53,14 +53,14 @@ define(exports, {
       return require("./getBranches");
     }
   },
-  getCurrentBranch: {
+  getBranch: {
     lazy: function() {
-      return require("./getCurrentBranch");
+      return require("./getBranch");
     }
   },
-  getLatestCommit: {
+  getHead: {
     lazy: function() {
-      return require("./getLatestCommit");
+      return require("./getHead");
     }
   },
   getRemotes: {
@@ -88,9 +88,9 @@ define(exports, {
       return require("./hasBranch");
     }
   },
-  hasChanges: {
+  isClean: {
     lazy: function() {
-      return require("./hasChanges");
+      return require("./isClean");
     }
   },
   isRepo: {
@@ -98,9 +98,19 @@ define(exports, {
       return require("./isRepo");
     }
   },
+  isStaged: {
+    lazy: function() {
+      return require("./isStaged");
+    }
+  },
   mergeBranch: {
     lazy: function() {
       return require("./mergeBranch");
+    }
+  },
+  mergeFiles: {
+    lazy: function() {
+      return require("./mergeFiles");
     }
   },
   pick: {
@@ -108,14 +118,24 @@ define(exports, {
       return require("./pick");
     }
   },
+  popCommit: {
+    lazy: function() {
+      return require("./popCommit");
+    }
+  },
   popStash: {
     lazy: function() {
       return require("./popStash");
     }
   },
-  pushChanges: {
+  pushCommit: {
     lazy: function() {
-      return require("./pushChanges");
+      return require("./pushCommit");
+    }
+  },
+  pushHead: {
+    lazy: function() {
+      return require("./pushHead");
     }
   },
   pushStash: {
@@ -138,19 +158,39 @@ define(exports, {
       return require("./removeBranch");
     }
   },
+  removeFile: {
+    lazy: function() {
+      return require("./removeFile");
+    }
+  },
   removeTag: {
     lazy: function() {
       return require("./removeTag");
     }
   },
+  renameFile: {
+    lazy: function() {
+      return require("./renameFile");
+    }
+  },
+  resetFile: {
+    lazy: function() {
+      return require("./resetFile");
+    }
+  },
+  setBranch: {
+    lazy: function() {
+      return require("./setBranch");
+    }
+  },
+  setHead: {
+    lazy: function() {
+      return require("./setHead");
+    }
+  },
   stageAll: {
     lazy: function() {
       return require("./stageAll");
-    }
-  },
-  undoLatestCommit: {
-    lazy: function() {
-      return require("./undoLatestCommit");
     }
   },
   unstageAll: {
