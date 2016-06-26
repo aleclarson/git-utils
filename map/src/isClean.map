@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "isClean.js",
+  "sourceRoot": "../../src",
+  "sources": [
+    "isClean.coffee"
+  ],
+  "names": [],
+  "mappings": "AACA,IAAA;;AAAA,UAAA,GAAa,OAAA,CAAQ,YAAR;;AAEb,SAAA,GAAY,OAAA,CAAQ,aAAR;;AAEZ,MAAM,CAAC,OAAP,GAAiB,SAAC,UAAD;EACf,UAAA,CAAW,UAAX,EAAuB,MAAvB;SACA,SAAA,CAAU;IAAE,YAAA,UAAF;IAAc,WAAA,EAAa,KAA3B;GAAV,CACA,CAAC,IADD,CACM,SAAC,MAAD;WAAY,MAAM,CAAC,MAAP,KAAiB;EAA7B,CADN;AAFe"
+}

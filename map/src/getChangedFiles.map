@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "getChangedFiles.js",
+  "sourceRoot": "../../src",
+  "sources": [
+    "getChangedFiles.coffee"
+  ],
+  "names": [],
+  "mappings": ""
+}

@@ -1,0 +1,17 @@
+var assertType, getStatus;
+
+assertType = require("assertType");
+
+getStatus = require("./getStatus");
+
+module.exports = function(modulePath) {
+  assertType(modulePath, String);
+  return getStatus({
+    modulePath: modulePath,
+    parseOutput: false
+  }).then(function(status) {
+    return status.length === 0;
+  });
+};
+
+//# sourceMappingURL=../../map/src/isClean.map
