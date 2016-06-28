@@ -1,4 +1,4 @@
-var Finder, assertType, exec, findName, findUri, log, regex;
+var Finder, assertType, exec, findName, findUri, os, regex;
 
 assertType = require("assertType");
 
@@ -6,7 +6,7 @@ Finder = require("finder");
 
 exec = require("exec");
 
-log = require("log");
+os = require("os");
 
 regex = /^([^\s]+)\s+([^\s]+)/g;
 
@@ -22,7 +22,7 @@ findUri = Finder({
 
 module.exports = function(modulePath) {
   assertType(modulePath, String);
-  return exec("git remote --verbose", {
+  return exec.async("git remote --verbose", {
     cwd: modulePath
   }).then(function(stdout) {
     var i, len, line, name, ref, remote, remotes;
@@ -30,7 +30,7 @@ module.exports = function(modulePath) {
     if (stdout.length === 0) {
       return remotes;
     }
-    ref = stdout.split(log.ln);
+    ref = stdout.split(os.EOL);
     for (i = 0, len = ref.length; i < len; i++) {
       line = ref[i];
       name = findName(line);

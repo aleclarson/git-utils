@@ -1,30 +1,16 @@
-var assertTypes, exec, isType, log, optionTypes;
+var assertType, exec;
 
-assertTypes = require("assertTypes");
-
-isType = require("isType");
+assertType = require("assertType");
 
 exec = require("exec");
 
-log = require("log");
-
-optionTypes = {
-  modulePath: String,
-  branchName: String
-};
-
-module.exports = function(options) {
-  var branchName, modulePath;
-  if (isType(options, String)) {
-    options = {
-      modulePath: arguments[0],
-      branchName: arguments[1]
-    };
-  }
-  assertTypes(options, optionTypes);
-  modulePath = options.modulePath, branchName = options.branchName;
-  return exec("git checkout -b " + branchName, {
+module.exports = function(modulePath, branchName) {
+  assertType(modulePath, String);
+  assertType(branchName, String);
+  return exec.async("git checkout -b " + branchName, {
     cwd: modulePath
+  }).then(function() {
+    return branchName;
   }).fail(function(error) {
     if (/Switched to a new branch/.test(error.message)) {
       return;

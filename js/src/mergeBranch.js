@@ -1,49 +1,62 @@
-var Maybe, MergeStrategy, OneOf, assertClean, assertTypes, exec, optionTypes, setBranch;
+var MergeStrategy, Promise, assertType, assertTypes, exec, git, optionTypes;
 
 assertTypes = require("assertTypes");
 
-OneOf = require("OneOf");
+assertType = require("assertType");
 
-Maybe = require("Maybe");
+Promise = require("Promise");
 
 exec = require("exec");
 
 MergeStrategy = require("./MergeStrategy");
 
-setBranch = require("./setBranch");
-
-assertClean = require("./assertClean");
-
-optionTypes = {
-  modulePath: String,
-  ours: String.Maybe,
-  theirs: String,
-  strategy: Maybe(MergeStrategy)
+git = {
+  isClean: require("./isClean"),
+  getBranch: require("./getBranch"),
+  setBranch: require("./setBranch")
 };
 
-module.exports = function(options) {
-  var modulePath, ours, strategy, theirs;
+optionTypes = {
+  ours: String.Maybe,
+  theirs: String,
+  strategy: MergeStrategy.Maybe
+};
+
+module.exports = function(modulePath, options) {
+  var startBranch;
+  assertType(modulePath, String);
   assertTypes(options, optionTypes);
-  modulePath = options.modulePath, ours = options.ours, theirs = options.theirs, strategy = options.strategy;
-  return assertClean(modulePath).then(function() {
-    if (!ours) {
+  startBranch = null;
+  return Promise.assert("The current branch cannot have any uncommitted changes!", function() {
+    return git.isClean(modulePath);
+  }).then(function() {
+    return git.getBranch(modulePath).then(function(currentBranch) {
+      return startBranch = currentBranch;
+    });
+  }).then(function() {
+    if (!options.ours) {
       return;
     }
-    return setBranch(modulePath, ours);
+    return git.setBranch(modulePath, options.ours);
   }).then(function() {
     var args;
-    args = [theirs, "--no-commit"];
-    if (strategy) {
-      args.push("-X", strategy);
+    args = [options.theirs, "--no-commit", "--no-ff"];
+    if (options.strategy) {
+      args.push("-X", options.strategy);
     }
-    return exec("git merge", args, {
+    return exec.async("git merge", args, {
       cwd: modulePath
+    }).fail(function(error) {
+      if (/Automatic merge went well/.test(error.message)) {
+        return;
+      }
+      throw error;
     });
-  }).fail(function(error) {
-    if (/Automatic merge went well/.test(error.message)) {
+  }).always(function() {
+    if (!options.ours) {
       return;
     }
-    throw error;
+    return git.setBranch(modulePath, startBranch);
   });
 };
 

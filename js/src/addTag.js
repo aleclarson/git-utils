@@ -1,36 +1,29 @@
-var assertTypes, exec, isType, optionTypes;
+var assertType, assertTypes, exec, optionTypes;
 
 assertTypes = require("assertTypes");
 
-isType = require("isType");
+assertType = require("assertType");
 
 exec = require("exec");
 
 optionTypes = {
-  modulePath: String,
-  tagName: String,
   force: Boolean.Maybe
 };
 
-module.exports = function(options) {
-  var args, force, modulePath, tagName;
-  if (isType(options, String)) {
-    options = {
-      modulePath: arguments[0],
-      tagName: arguments[1]
-    };
-  }
+module.exports = function(modulePath, tagName, options) {
+  var args;
+  assertType(modulePath, String);
+  assertType(tagName, String);
   assertTypes(options, optionTypes);
-  tagName = options.tagName, modulePath = options.modulePath, force = options.force;
   args = [tagName];
-  if (force) {
+  if (options.force) {
     args.unshift("-f");
   }
-  return exec("git tag", args, {
+  return exec.async("git tag", args, {
     cwd: modulePath
   }).fail(function(error) {
     var expected;
-    if (!force) {
+    if (!options.force) {
       expected = "fatal: tag '" + tagName + "' already exists";
       if (error.message === expected) {
         throw Error("Tag already exists!");

@@ -1,6 +1,8 @@
-var Finder, assertTypes, exec, isType, log, optionTypes;
+var Finder, assertType, assertTypes, exec, getRemotes, isType, optionTypes, os;
 
 assertTypes = require("assertTypes");
+
+assertType = require("assertType");
 
 Finder = require("finder");
 
@@ -8,39 +10,41 @@ isType = require("isType");
 
 exec = require("exec");
 
-log = require("log");
+os = require("os");
+
+getRemotes = require("./getRemotes");
 
 optionTypes = {
-  modulePath: String,
-  remoteName: String.Maybe,
-  parseOutput: Boolean.Maybe
+  raw: Boolean.Maybe
 };
 
-module.exports = function(options) {
-  var modulePath, parseOutput, remoteName;
-  if (isType(options, String)) {
-    options = {
-      modulePath: arguments[0],
-      remoteName: arguments[1]
-    };
+module.exports = function(modulePath, remoteName, options) {
+  if (isType(remoteName, Object)) {
+    options = remoteName;
+    remoteName = null;
+  } else {
+    if (options == null) {
+      options = {};
+    }
   }
+  assertType(modulePath, String);
+  assertType(remoteName, String.Maybe);
   assertTypes(options, optionTypes);
-  modulePath = options.modulePath, remoteName = options.remoteName, parseOutput = options.parseOutput;
   if (remoteName) {
     return getRemotes(modulePath).then(function(remotes) {
       var remoteUri;
       remoteUri = remotes[remoteName].push;
-      return exec("git ls-remote --heads " + remoteUri, {
+      return exec.async("git ls-remote --heads " + remoteUri, {
         cwd: modulePath
       });
     }).then(function(stdout) {
       var branches, findName, i, len, line, name, ref;
-      if (parseOutput === false) {
+      if (options.raw) {
         return stdout;
       }
       findName = Finder(/refs\/heads\/(.+)$/);
       branches = [];
-      ref = stdout.split(log.ln);
+      ref = stdout.split(os.EOL);
       for (i = 0, len = ref.length; i < len; i++) {
         line = ref[i];
         name = findName(line);
@@ -52,16 +56,16 @@ module.exports = function(options) {
       return branches;
     });
   }
-  return exec("git branch", {
+  return exec.async("git branch", {
     cwd: modulePath
   }).then(function(stdout) {
     var branches, findName, i, len, line, name, ref;
-    if (parseOutput === false) {
+    if (options.raw) {
       return stdout;
     }
     findName = Finder(/^[\*\s]+([a-zA-Z0-9_\-\.]+)$/);
     branches = [];
-    ref = stdout.split(log.ln);
+    ref = stdout.split(os.EOL);
     for (i = 0, len = ref.length; i < len; i++) {
       line = ref[i];
       name = findName(line);

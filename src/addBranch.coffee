@@ -1,26 +1,16 @@
 
-assertTypes = require "assertTypes"
-isType = require "isType"
+assertType = require "assertType"
 exec = require "exec"
-log = require "log"
-
-optionTypes =
-  modulePath: String
-  branchName: String
 
 # TODO: Test against existing branch name.
-module.exports = (options) ->
+module.exports = (modulePath, branchName) ->
 
-  if isType options, String
-    options =
-      modulePath: arguments[0]
-      branchName: arguments[1]
+  assertType modulePath, String
+  assertType branchName, String
 
-  assertTypes options, optionTypes
+  exec.async "git checkout -b " + branchName, { cwd: modulePath }
 
-  { modulePath, branchName } = options
-
-  exec "git checkout -b " + branchName, { cwd: modulePath }
+  .then -> branchName
 
   .fail (error) ->
 

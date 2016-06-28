@@ -1,33 +1,25 @@
-var assertTypes, getBranches, inArray, isType, optionTypes;
+var assertType, assertTypes, getBranches, inArray, optionTypes;
 
 assertTypes = require("assertTypes");
 
-inArray = require("in-array");
+assertType = require("assertType");
 
-isType = require("isType");
+inArray = require("in-array");
 
 getBranches = require("./getBranches");
 
 optionTypes = {
-  modulePath: String,
-  branchName: String,
-  remoteName: String.Maybe
+  remote: String.Maybe
 };
 
-module.exports = function(options) {
-  var branchName, modulePath, remoteName;
-  if (isType(options, String)) {
-    options = {
-      modulePath: arguments[0],
-      branchName: arguments[1]
-    };
+module.exports = function(modulePath, branchName, options) {
+  if (options == null) {
+    options = {};
   }
+  assertType(modulePath, String);
+  assertType(branchName, String);
   assertTypes(options, optionTypes);
-  modulePath = options.modulePath, branchName = options.branchName, remoteName = options.remoteName;
-  return getBranches({
-    modulePath: modulePath,
-    remoteName: remoteName
-  }).then(function(branchNames) {
+  return getBranches(modulePath, options.remote).then(function(branchNames) {
     return inArray(branchNames, branchName);
   });
 };

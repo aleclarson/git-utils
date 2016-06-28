@@ -1,26 +1,14 @@
 
-assertTypes = require "assertTypes"
-isType = require "isType"
+assertType = require "assertType"
+assert = require "assert"
 exec = require "exec"
-path = require "path"
-
-optionTypes =
-  modulePath: String
-  oldName: String
-  newName: String
 
 # TODO: Test with `oldName` not existing.
-module.exports = (options) ->
+module.exports = (modulePath, oldName, newName) ->
 
-  if isType options, String
-    options =
-      modulePath: arguments[0]
-      oldName: arguments[1]
-      newName: arguments[2]
-
-  assertTypes options, optionTypes
-
-  { modulePath, oldName, newName } = options
+  assertType modulePath, String
+  assertType oldName, String
+  assertType newName, String
 
   rootLength = modulePath.length
 
@@ -32,4 +20,4 @@ module.exports = (options) ->
     assert newName.slice(0, rootLength) is modulePath, "'newName' must be a descendant of 'modulePath'!"
     newName = newName.slice rootLength + 1
 
-  exec "git mv", [ oldName, newName ], cwd: modulePath
+  exec.async "git mv", [ oldName, newName ], cwd: modulePath

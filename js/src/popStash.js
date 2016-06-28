@@ -6,7 +6,7 @@ exec = require("exec");
 
 module.exports = function(modulePath) {
   assertType(modulePath, String);
-  return exec("git stash pop", {
+  return exec.async("git stash pop", {
     cwd: modulePath
   });
 };

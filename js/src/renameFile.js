@@ -1,30 +1,16 @@
-var assertTypes, exec, isType, optionTypes, path;
+var assert, assertType, exec;
 
-assertTypes = require("assertTypes");
+assertType = require("assertType");
 
-isType = require("isType");
+assert = require("assert");
 
 exec = require("exec");
 
-path = require("path");
-
-optionTypes = {
-  modulePath: String,
-  oldName: String,
-  newName: String
-};
-
-module.exports = function(options) {
-  var modulePath, newName, oldName, rootLength;
-  if (isType(options, String)) {
-    options = {
-      modulePath: arguments[0],
-      oldName: arguments[1],
-      newName: arguments[2]
-    };
-  }
-  assertTypes(options, optionTypes);
-  modulePath = options.modulePath, oldName = options.oldName, newName = options.newName;
+module.exports = function(modulePath, oldName, newName) {
+  var rootLength;
+  assertType(modulePath, String);
+  assertType(oldName, String);
+  assertType(newName, String);
   rootLength = modulePath.length;
   if (oldName[0] === "/") {
     assert(oldName.slice(0, rootLength) === modulePath, "'oldName' must be a descendant of 'modulePath'!");
@@ -34,7 +20,7 @@ module.exports = function(options) {
     assert(newName.slice(0, rootLength) === modulePath, "'newName' must be a descendant of 'modulePath'!");
     newName = newName.slice(rootLength + 1);
   }
-  return exec("git mv", [oldName, newName], {
+  return exec.async("git mv", [oldName, newName], {
     cwd: modulePath
   });
 };

@@ -30,7 +30,7 @@ module.exports = assertRepo = function(modulePath) {
   if (!shouldInit) {
     return Promise();
   }
-  return exec("git init", {
+  return exec.async("git init", {
     cwd: modulePath
   });
 };

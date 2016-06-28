@@ -1,7 +1,7 @@
 
 assertTypes = require "assertTypes"
+assertType = require "assertType"
 Promise = require "Promise"
-isType = require "isType"
 exec = require "exec"
 
 git =
@@ -9,30 +9,22 @@ git =
   hasBranch: require "./hasBranch"
 
 optionTypes =
-  modulePath: String
-  remoteName: String.Maybe
-  branchName: String.Maybe
+  remote: String.Maybe
+  message: Boolean.Maybe
 
-module.exports = (options) ->
+module.exports = (modulePath, branchName, options = {}) ->
 
-  if isType options, String
-    options =
-      modulePath: arguments[0]
-      remoteName: arguments[1]
-      branchName: arguments[2]
-
+  assertType modulePath, String
+  assertType branchName, String.Maybe
   assertTypes options, optionTypes
-
-  { modulePath, remoteName, branchName } = options
-
-  remoteName ?= "origin"
 
   return Promise.try ->
 
     if branchName
       return git.hasBranch modulePath, branchName
       .then (hasBranch) ->
-        branchName = null if not hasBranch
+        return if hasBranch
+        branchName = null
 
     git.getBranch modulePath
     .then (currentBranch) ->
@@ -46,12 +38,18 @@ module.exports = (options) ->
     args = [
       "-1"
       "--pretty=oneline"
-      remoteName + "/" + branchName
+      (options.remote or "origin") + "/" + branchName
     ]
 
-    exec "git log", args, cwd: modulePath
+    exec.async "git log", args, cwd: modulePath
 
     .then (stdout) ->
-      spaceIndex = stdout.indexOf " "
-      id: stdout.slice 0, spaceIndex
-      message: stdout.slice spaceIndex + 1
+
+      separator = stdout.indexOf " "
+
+      id = stdout.slice 0, separator
+
+      if options.message
+        return { id, message: stdout.slice separator + 1 }
+
+      return id

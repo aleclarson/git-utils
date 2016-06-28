@@ -1,34 +1,23 @@
 
 { find } = require "finder"
 
-assertTypes = require "assertTypes"
-isType = require "isType"
+assertType   = require "assertType"
 exec = require "exec"
-
-optionTypes =
-  modulePath: String
-  from: String
-  to: String.Maybe
+os = require "os"
 
 # TODO: Test against an empty diff.
-module.exports = (options) ->
+# TODO: Test with non-existent commits.
+# TODO: Test with branches.
+module.exports = (modulePath, firstCommit, lastCommit = "HEAD") ->
 
-  if isType options, String
-    options =
-      modulePath: arguments[0]
-      from: arguments[1]
-      to: arguments[2]
+  assertType modulePath, String
+  assertType firstCommit, String
+  assertType lastCommit, String
 
-  assertTypes options, optionTypes
-
-  { modulePath, from, to } = options
-
-  to ?= "HEAD"
-
-  exec "git diff --raw #{from}..#{to}",  { cwd: modulePath }
+  exec.async "git diff --raw #{firstCommit}..#{lastCommit}",  cwd: modulePath
 
   .then (stdout) ->
-    lines = stdout.split "\n"
+    lines = stdout.split os.EOL
     regex = /^:[0-9]{6} [0-9]{6} [0-9a-z]{7}\.\.\. [0-9a-z]{7}\.\.\. (.)\t(.+)$/
     return lines.map (line) ->
       status = find regex, line, 1

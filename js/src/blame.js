@@ -1,34 +1,30 @@
-var assertTypes, exec, isType, optionTypes;
+var assertType, assertTypes, exec, optionTypes;
 
 assertTypes = require("assertTypes");
 
-isType = require("isType");
+assertType = require("assertType");
 
 exec = require("exec");
 
 optionTypes = {
-  modulePath: String,
-  filePath: String,
   lines: Array.Maybe
 };
 
-module.exports = function(options) {
-  var args, filePath, lines, modulePath;
-  if (isType(options, String)) {
-    options = {
-      modulePath: arguments[0],
-      filePath: arguments[1],
-      lines: arguments[2]
-    };
+module.exports = function(modulePath, filePath, options) {
+  var args, lines;
+  if (options == null) {
+    options = {};
   }
-  assertTypes(options, optionTypes);
-  modulePath = options.modulePath, filePath = options.filePath, lines = options.lines;
+  assertType(modulePath, String, "modulePath");
+  assertType(filePath, String, "filePath");
+  assertTypes(options, optionTypes, "options");
   args = ["--porcelain"];
-  if (lines.length >= 2) {
+  lines = options.lines;
+  if (lines && lines.length >= 2) {
     args.push("-L" + lines[0] + "," + lines[1]);
   }
   args.push("--", filePath);
-  return exec("git blame", args, {
+  return exec.async("git blame", args, {
     cwd: modulePath
   });
 };

@@ -1,27 +1,20 @@
 
 assertTypes = require "assertTypes"
+assertType = require "assertType"
 inArray = require "in-array"
-isType = require "isType"
 
 getBranches = require "./getBranches"
 
 optionTypes =
-  modulePath: String
-  branchName: String
-  remoteName: String.Maybe
+  remote: String.Maybe
 
-module.exports = (options) ->
+module.exports = (modulePath, branchName, options = {}) ->
 
-  if isType options, String
-    options =
-      modulePath: arguments[0]
-      branchName: arguments[1]
-
+  assertType modulePath, String
+  assertType branchName, String
   assertTypes options, optionTypes
 
-  { modulePath, branchName, remoteName } = options
-
-  getBranches { modulePath, remoteName }
+  getBranches modulePath, options.remote
 
   .then (branchNames) ->
     inArray branchNames, branchName

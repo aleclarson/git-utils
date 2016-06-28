@@ -6,7 +6,7 @@ module.exports = (modulePath) ->
 
   assertType modulePath, String
 
-  exec "git rev-parse --abbrev-ref HEAD", cwd: modulePath
+  exec.async "git rev-parse --abbrev-ref HEAD", cwd: modulePath
 
   .fail (error) ->
 

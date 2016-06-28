@@ -1,17 +1,17 @@
 
 assertType = require "assertType"
 exec = require "exec"
-log = require "log"
+os = require "os"
 
 module.exports = (modulePath) ->
 
   assertType modulePath, String
 
-  exec "git tag", cwd: modulePath
+  exec.async "git tag", cwd: modulePath
 
   .then (stdout) ->
 
     if stdout.length is 0
       return []
 
-    return stdout.split log.ln
+    return stdout.split os.EOL

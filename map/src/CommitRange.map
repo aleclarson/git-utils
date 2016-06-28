@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "CommitRange.js",
+  "sourceRoot": "../../src",
+  "sources": [
+    "CommitRange.coffee"
+  ],
+  "names": [],
+  "mappings": "AACA,IAAA;;AAAA,KAAA,GAAQ,OAAA,CAAQ,OAAR;;AAER,WAAA,GAAc,KAAA,CAAM,aAAN,EAAqB;EACjC,IAAA,EAAM,MAD2B;EAEjC,EAAA,EAAI,MAF6B;CAArB;;AAKd,MAAM,CAAC,OAAP,GAAiB"
+}

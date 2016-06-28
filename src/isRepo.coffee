@@ -1,15 +1,15 @@
 
-syncFs = require "io/sync"
-Path = require "path"
+path = require "path"
+fs = require "io/sync"
 
-module.exports = (path) ->
+module.exports = (modulePath) ->
 
-  if path[0] is "."
-    path = Path.resolve process.cwd(), path
+  if modulePath[0] is "."
+    modulePath = path.resolve process.cwd(), modulePath
 
-  else if path[0] isnt "/"
-    path = lotus.path + "/" + path
+  else if modulePath[0] isnt "/"
+    modulePath = lotus.path + "/" + modulePath
 
-  path = Path.join path, ".git"
+  modulePath = path.join modulePath, ".git"
 
-  return syncFs.isDir path
+  return fs.isDir modulePath

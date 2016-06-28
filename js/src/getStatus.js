@@ -1,8 +1,10 @@
-var Finder, assert, assertTypes, escapeStringRegExp, exec, findNewPath, findPath, findStagingStatus, findWorkingStatus, isType, optionTypes, ref, run, statusMap;
+var Finder, assert, assertType, assertTypes, escapeStringRegExp, exec, findNewPath, findPath, findStagingStatus, findWorkingStatus, isType, optionTypes, ref, run, statusMap;
 
 escapeStringRegExp = require("escape-string-regexp");
 
 assertTypes = require("assertTypes");
+
+assertType = require("assertType");
 
 Finder = require("finder");
 
@@ -15,24 +17,20 @@ exec = require("exec");
 run = require("run");
 
 optionTypes = {
-  modulePath: String,
-  parseOutput: Boolean.Maybe
+  raw: Boolean.Maybe
 };
 
-module.exports = function(options) {
-  var modulePath, parseOutput;
-  if (isType(options, String)) {
-    options = {
-      modulePath: arguments[0]
-    };
+module.exports = function(modulePath, options) {
+  if (options == null) {
+    options = {};
   }
+  assertType(modulePath, String);
   assertTypes(options, optionTypes);
-  modulePath = options.modulePath, parseOutput = options.parseOutput;
-  return exec("git status --porcelain", {
+  return exec.async("git status --porcelain", {
     cwd: modulePath
   }).then(function(stdout) {
     var base, base1, file, files, i, len, line, ref, results, stagingStatus, status, workingStatus;
-    if (parseOutput === false) {
+    if (options.raw) {
       return stdout;
     }
     results = {
@@ -94,22 +92,22 @@ module.exports = function(options) {
   });
 };
 
+statusMap = {
+  "A": "added",
+  "C": "copied",
+  "R": "renamed",
+  "M": "modified",
+  "D": "deleted",
+  "U": "unmerged",
+  "?": "untracked"
+};
+
 ref = run(function() {
-  var charRegex, chars, regex, statusMap;
-  statusMap = {
-    "A": "added",
-    "C": "copied",
-    "R": "renamed",
-    "M": "modified",
-    "D": "deleted",
-    "U": "unmerged",
-    "?": "untracked"
-  };
+  var charRegex, chars, regex;
   chars = Object.keys(statusMap);
   charRegex = "([" + escapeStringRegExp(chars.join("")) + "\\s]{1})";
   regex = RegExp(["^[\\s]*", charRegex, charRegex, " ", "([^\\s]+)", "( -> ([^\\s]+))?"].join(""));
   return {
-    statusMap: statusMap,
     findStagingStatus: Finder({
       regex: regex,
       group: 1
@@ -127,6 +125,6 @@ ref = run(function() {
       group: 5
     })
   };
-}), statusMap = ref.statusMap, findStagingStatus = ref.findStagingStatus, findWorkingStatus = ref.findWorkingStatus, findPath = ref.findPath, findNewPath = ref.findNewPath;
+}), findStagingStatus = ref.findStagingStatus, findWorkingStatus = ref.findWorkingStatus, findPath = ref.findPath, findNewPath = ref.findNewPath;
 
 //# sourceMappingURL=../../map/src/getStatus.map

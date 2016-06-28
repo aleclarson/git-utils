@@ -1,25 +1,26 @@
 
 assertTypes = require "assertTypes"
+assertType = require "assertType"
 Finder = require "finder"
 isType = require "isType"
 exec = require "exec"
-log = require "log"
+os = require "os"
+
+getRemotes = require "./getRemotes"
 
 optionTypes =
-  modulePath: String
-  remoteName: String.Maybe
-  parseOutput: Boolean.Maybe
+  raw: Boolean.Maybe
 
-module.exports = (options) ->
+module.exports = (modulePath, remoteName, options) ->
 
-  if isType options, String
-    options =
-      modulePath: arguments[0]
-      remoteName: arguments[1]
+  if isType remoteName, Object
+    options = remoteName
+    remoteName = null
+  else options ?= {}
 
+  assertType modulePath, String
+  assertType remoteName, String.Maybe
   assertTypes options, optionTypes
-
-  { modulePath, remoteName, parseOutput } = options
 
   if remoteName
 
@@ -27,32 +28,32 @@ module.exports = (options) ->
 
     .then (remotes) ->
       remoteUri = remotes[remoteName].push
-      exec "git ls-remote --heads #{remoteUri}", cwd: modulePath
+      exec.async "git ls-remote --heads #{remoteUri}", cwd: modulePath
 
     .then (stdout) ->
 
-      if parseOutput is no
+      if options.raw
         return stdout
 
       findName = Finder /refs\/heads\/(.+)$/
       branches = []
-      for line in stdout.split log.ln
+      for line in stdout.split os.EOL
         name = findName line
         continue if not name
         branches.push name
 
       return branches
 
-  return exec "git branch", cwd: modulePath
+  return exec.async "git branch", cwd: modulePath
 
   .then (stdout) ->
 
-    if parseOutput is no
+    if options.raw
       return stdout
 
     findName = Finder /^[\*\s]+([a-zA-Z0-9_\-\.]+)$/
     branches = []
-    for line in stdout.split log.ln
+    for line in stdout.split os.EOL
       name = findName line
       continue if not name
       branches.push name

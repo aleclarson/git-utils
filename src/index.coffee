@@ -9,20 +9,29 @@ define exports,
   addTag: lazy: ->
     require "./addTag"
 
-  assertClean: lazy: ->
-    require "./assertClean"
-
   assertRepo: lazy: ->
     require "./assertRepo"
-
-  assertStaged: lazy: ->
-    require "./assertStaged"
 
   blame: lazy: ->
     require "./blame"
 
+  commit: lazy: ->
+    require "./commit"
+
+  deleteBranch: lazy: ->
+    require "./deleteBranch"
+
+  deleteFile: lazy: ->
+    require "./deleteFile"
+
+  deleteTag: lazy: ->
+    require "./deleteTag"
+
   diff: lazy: ->
     require "./diff"
+
+  diffConflicts: lazy: ->
+    require "./diffConflicts"
 
   findConflicts: lazy: ->
     require "./findConflicts"
@@ -30,11 +39,11 @@ define exports,
   findVersion: lazy: ->
     require "./findVersion"
 
-  getBranches: lazy: ->
-    require "./getBranches"
-
   getBranch: lazy: ->
     require "./getBranch"
+
+  getBranches: lazy: ->
+    require "./getBranches"
 
   getHead: lazy: ->
     require "./getHead"
@@ -72,17 +81,11 @@ define exports,
   pick: lazy: ->
     require "./pick"
 
-  popCommit: lazy: ->
-    require "./popCommit"
-
   popStash: lazy: ->
     require "./popStash"
 
-  pushCommit: lazy: ->
-    require "./pushCommit"
-
-  pushHead: lazy: ->
-    require "./pushHead"
+  pushBranch: lazy: ->
+    require "./pushBranch"
 
   pushStash: lazy: ->
     require "./pushStash"
@@ -93,29 +96,20 @@ define exports,
   pushVersion: lazy: ->
     require "./pushVersion"
 
-  removeBranch: lazy: ->
-    require "./removeBranch"
-
-  removeFile: lazy: ->
-    require "./removeFile"
-
-  removeTag: lazy: ->
-    require "./removeTag"
-
   renameFile: lazy: ->
     require "./renameFile"
 
-  resetFile: lazy: ->
-    require "./resetFile"
+  resetBranch: lazy: ->
+    require "./resetBranch"
+
+  resetFiles: lazy: ->
+    require "./resetFiles"
 
   setBranch: lazy: ->
     require "./setBranch"
 
-  setHead: lazy: ->
-    require "./setHead"
+  stageFiles: lazy: ->
+    require "./stageFiles"
 
-  stageAll: lazy: ->
-    require "./stageAll"
-
-  unstageAll: lazy: ->
-    require "./unstageAll"
+  unstageFiles: lazy: ->
+    require "./unstageFiles"

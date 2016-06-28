@@ -1,33 +1,31 @@
 
 assertTypes = require "assertTypes"
-isType = require "isType"
+assertType = require "assertType"
 exec = require "exec"
-log = require "log"
+os = require "os"
 
 optionTypes =
-  modulePath: String
-  remoteName: String.Maybe
   force: Boolean.Maybe
+  remote: String.Maybe
 
-module.exports = (options) ->
+module.exports = (modulePath, options) ->
 
-  if isType options, String
-    options = { modulePath: options }
-
+  assertType modulePath, String
   assertTypes options, optionTypes
 
-  { modulePath, remoteName, force } = options
+  args = [
+    options.remote or "origin"
+    "--tags"
+  ]
 
-  remoteName ?= "origin"
+  if options.force
+    args.push "-f"
 
-  args = [ remoteName, "--tags" ]
-  args.push "-f" if force
-
-  exec "git push", args, cwd: modulePath
+  exec.async "git push", args, cwd: modulePath
 
   .fail (error) ->
 
-    lines = error.message.split log.ln
+    lines = error.message.split os.EOL
 
     if /\(already exists\)$/.test lines[1]
       throw Error "Tag already exists!"

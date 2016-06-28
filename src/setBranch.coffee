@@ -1,6 +1,7 @@
 
 assertTypes = require "assertTypes"
-isType = require "isType"
+assertType = require "assertType"
+Promise = require "Promise"
 exec = require "exec"
 
 git =
@@ -9,20 +10,13 @@ git =
   isClean: require "./isClean"
 
 optionTypes =
-  modulePath: String
-  branchName: String
   force: Boolean.Maybe
 
-module.exports = (options) ->
+module.exports = (modulePath, branchName, options) ->
 
-  if isType options, String
-    options =
-      modulePath: arguments[0]
-      branchName: arguments[1]
-
+  assertType modulePath, String
+  assertType branchName, String
   assertTypes options, optionTypes
-
-  { modulePath, branchName, force } = options
 
   git.getBranch modulePath
 
@@ -31,31 +25,29 @@ module.exports = (options) ->
     if currentBranch is branchName
       return currentBranch
 
-    git.isClean modulePath
+    # Unless force is applied, throw if the branch isnt clean.
+    Promise.try ->
+      return if options.force
+      git.isClean modulePath
+      .then (clean) ->
+        clean or throw Error "The current branch has uncommitted changes!"
 
-    .then (clean) ->
-
-      if not clean
-        throw Error "The current branch has uncommitted changes!"
-
-      git.hasBranch { modulePath, branchName }
-
+    .then -> git.hasBranch modulePath, branchName
     .then (branchExists) ->
 
       args = [ branchName ]
 
+      # Create a new branch, if one doesnt exist.
+      # Throw an error unless `options.force` is true.
       if not branchExists
-
-        if not force
-          throw Error "Invalid branch name!"
-
+        options.force or throw Error "Invalid branch name!"
         args.unshift "-b"
 
-      exec "git checkout", args, cwd: modulePath
+      exec.async "git checkout", args, cwd: modulePath
 
       .fail (error) ->
 
-        if /Switched to branch/.test error.message
-          return # 'git checkout' incorrectly prints to 'stderr'
+        # 'git checkout' incorrectly prints to 'stderr'
+        return if /Switched to branch/.test error.message
 
         throw error

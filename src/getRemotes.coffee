@@ -2,7 +2,7 @@
 assertType = require "assertType"
 Finder = require "finder"
 exec = require "exec"
-log = require "log"
+os = require "os"
 
 regex = /^([^\s]+)\s+([^\s]+)/g
 findName = Finder { regex, group: 1 }
@@ -12,7 +12,7 @@ module.exports = (modulePath) ->
 
   assertType modulePath, String
 
-  exec "git remote --verbose", cwd: modulePath
+  exec.async "git remote --verbose", cwd: modulePath
 
   .then (stdout) ->
 
@@ -21,7 +21,7 @@ module.exports = (modulePath) ->
     if stdout.length is 0
       return remotes
 
-    for line in stdout.split log.ln
+    for line in stdout.split os.EOL
       name = findName line
       remote = remotes[name] ?= {}
       if /\(push\)$/.test line

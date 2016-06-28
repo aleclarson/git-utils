@@ -1,40 +1,60 @@
 
 assertTypes = require "assertTypes"
-OneOf = require "OneOf"
-Maybe = require "Maybe"
+assertType = require "assertType"
+Promise = require "Promise"
 exec = require "exec"
 
 MergeStrategy = require "./MergeStrategy"
-setBranch = require "./setBranch"
-assertClean = require "./assertClean"
+git =
+  isClean: require "./isClean"
+  getBranch: require "./getBranch"
+  setBranch: require "./setBranch"
 
 optionTypes =
-  modulePath: String
   ours: String.Maybe
   theirs: String
-  strategy: Maybe MergeStrategy
+  strategy: MergeStrategy.Maybe
 
-module.exports = (options) ->
+module.exports = (modulePath, options) ->
 
+  assertType modulePath, String
   assertTypes options, optionTypes
 
-  { modulePath, ours, theirs, strategy } = options
+  startBranch = null
 
-  assertClean modulePath
-
-  .then ->
-    return if not ours
-    setBranch modulePath, ours
+  Promise.assert "The current branch cannot have any uncommitted changes!", ->
+    git.isClean modulePath
 
   .then ->
-    args = [ theirs, "--no-commit" ]
-    args.push "-X", strategy if strategy
-    exec "git merge", args, cwd: modulePath
+    git.getBranch modulePath
+    .then (currentBranch) ->
+      startBranch = currentBranch
 
-  # TODO: Fail gracefully if the merge was empty.
-  .fail (error) ->
+  .then ->
+    return if not options.ours
+    git.setBranch modulePath, options.ours
 
-    if /Automatic merge went well/.test error.message
-      return # 'git merge' incorrectly prints to 'stderr'
+  .then ->
 
-    throw error
+    args = [
+      options.theirs
+      "--no-commit"
+      "--no-ff"
+    ]
+
+    if options.strategy
+      args.push "-X", options.strategy
+
+    exec.async "git merge", args, cwd: modulePath
+
+    # TODO: Fail gracefully if the merge was empty.
+    .fail (error) ->
+
+      if /Automatic merge went well/.test error.message
+        return # 'git merge' incorrectly prints to 'stderr'
+
+      throw error
+
+  .always ->
+    return if not options.ours
+    git.setBranch modulePath, startBranch

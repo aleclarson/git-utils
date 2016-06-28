@@ -28,4 +28,4 @@ assertRepo = (modulePath) ->
   if not shouldInit
     return Promise()
 
-  exec "git init", cwd: modulePath
+  exec.async "git init", cwd: modulePath

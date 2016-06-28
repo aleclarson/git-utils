@@ -1,6 +1,7 @@
 
 escapeStringRegExp = require "escape-string-regexp"
 assertTypes = require "assertTypes"
+assertType = require "assertType"
 Finder = require "finder"
 isType = require "isType"
 assert = require "assert"
@@ -8,23 +9,18 @@ exec = require "exec"
 run = require "run"
 
 optionTypes =
-  modulePath: String
-  parseOutput: Boolean.Maybe
+  raw: Boolean.Maybe
 
-module.exports = (options) ->
+module.exports = (modulePath, options = {}) ->
 
-  if isType options, String
-    options = { modulePath: arguments[0] }
-
+  assertType modulePath, String
   assertTypes options, optionTypes
 
-  { modulePath, parseOutput } = options
-
-  exec "git status --porcelain", cwd: modulePath
+  exec.async "git status --porcelain", cwd: modulePath
 
   .then (stdout) ->
 
-    if parseOutput is no
+    if options.raw
       return stdout
 
     results = {
@@ -75,16 +71,16 @@ module.exports = (options) ->
 
     return results
 
-{ statusMap, findStagingStatus, findWorkingStatus, findPath, findNewPath } = run ->
+statusMap =
+  "A": "added"
+  "C": "copied"
+  "R": "renamed"
+  "M": "modified"
+  "D": "deleted"
+  "U": "unmerged"
+  "?": "untracked"
 
-  statusMap =
-    "A": "added"
-    "C": "copied"
-    "R": "renamed"
-    "M": "modified"
-    "D": "deleted"
-    "U": "unmerged"
-    "?": "untracked"
+{ findStagingStatus, findWorkingStatus, findPath, findNewPath } = run ->
 
   chars = Object.keys statusMap
   charRegex = "([" + escapeStringRegExp(chars.join "") + "\\s]{1})"
@@ -98,10 +94,7 @@ module.exports = (options) ->
     "( -> ([^\\s]+))?" # The 'new path' (optional)
   ].join ""
 
-  return {
-    statusMap
-    findStagingStatus: Finder { regex, group: 1 }
-    findWorkingStatus: Finder { regex, group: 2 }
-    findPath: Finder { regex, group: 3 }
-    findNewPath: Finder { regex, group: 5 }
-  }
+  findStagingStatus: Finder { regex, group: 1 }
+  findWorkingStatus: Finder { regex, group: 2 }
+  findPath: Finder { regex, group: 3 }
+  findNewPath: Finder { regex, group: 5 }

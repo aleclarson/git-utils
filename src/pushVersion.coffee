@@ -1,86 +1,97 @@
 
 assertTypes = require "assertTypes"
+assertType = require "assertType"
 semver = require "node-semver"
 assert = require "assert"
-Path = require "path"
 exec = require "exec"
-log = require "log"
+os = require "os"
 
-assertStaged = require "./assertStaged"
-findVersion = require "./findVersion"
-removeTag = require "./removeTag"
-addCommit = require "./addCommit"
-popCommit = require "./popCommit"
-stageAll = require "./stageAll"
-pushHead = require "./pushHead"
-pushTags = require "./pushTags"
-addTag = require "./addTag"
+git =
+  addTag: require "./addTag"
+  commit: require "./commit"
+  deleteTag: require "./deleteTag"
+  findVersion: require "./findVersion"
+  isStaged: require "./isStaged"
+  pushBranch: require "./pushBranch"
+  pushTags: require "./pushTags"
+  resetBranch: require "./resetBranch"
 
 optionTypes =
-  modulePath: String
-  remoteName: String
-  version: String
-  message: String.Maybe
   force: Boolean.Maybe
+  remote: String.Maybe
+  message: String.Maybe
 
-module.exports = (options) ->
+module.exports = (modulePath, version, options) ->
 
+  assertType modulePath, String
+  assertType version, String
   assertTypes options, optionTypes
-
-  { modulePath, remoteName, version, message, force } = options
 
   assert semver.valid(version), "Invalid version formatting!"
 
-  assertStaged modulePath
+  options.remote ?= "origin"
+
+  Promise.assert "No changes were staged!", ->
+    git.isStaged modulePath
 
   .then ->
-    findVersion modulePath, version
+    git.findVersion modulePath, version
 
   .then ({ index, versions }) ->
 
     return if index < 0
 
-    if not force
+    if not options.force
       throw Error "Version already exists!"
 
     if index isnt versions.length - 1
       throw Error "Can only overwrite the most recent version!"
 
-    popCommit modulePath
+    git.resetBranch modulePath, "HEAD^"
 
   .then ->
 
-    message = version +
-      if message then log.ln + message
-      else ""
+    message = version
 
-    addCommit modulePath, message
+    if options.message
+      message += os.EOL + options.message
 
-  .then ->
-    addTag { modulePath, tagName: version, force }
+    git.commit modulePath, message
 
   .then ->
-    pushHead { modulePath, remoteName, force }
+    git.addTag modulePath, version,
+      force: options.force
 
   .then ->
-    pushTags { modulePath, remoteName, force }
+    git.pushBranch modulePath, options.remote,
+      force: options.force
+
+  .then ->
+    git.pushTags modulePath, options.remote,
+      force: options.force
 
   .fail (error) ->
 
     # Force an upstream branch to exist. Is this possibly dangerous?
     if /^fatal: The current branch [^\s]+ has no upstream branch/.test error.message
-      return pushHead { modulePath, remoteName, force, upstream: yes }
-      .then -> pushTags { modulePath, remoteName, force }
+
+      return git.pushBranch modulePath, options.remote,
+        force: options.force
+        upstream: yes
+
+      .then ->
+        git.pushTags modulePath, options.remote,
+          force: options.force
 
     throw error
 
-  # In case 'pushHead' fails again, we need a separate 'onRejected' handler.
+  # In case 'pushBranch' fails again, we need a separate 'onRejected' handler.
   .fail (error) ->
 
-    popCommit modulePath
+    git.resetBranch modulePath, "HEAD^"
 
     .then ->
-      removeTag modulePath, version
+      git.deleteTag modulePath, version
 
     .then ->
       throw error

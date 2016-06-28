@@ -1,17 +1,17 @@
-var Path, syncFs;
+var fs, path;
 
-syncFs = require("io/sync");
+path = require("path");
 
-Path = require("path");
+fs = require("io/sync");
 
-module.exports = function(path) {
-  if (path[0] === ".") {
-    path = Path.resolve(process.cwd(), path);
-  } else if (path[0] !== "/") {
-    path = lotus.path + "/" + path;
+module.exports = function(modulePath) {
+  if (modulePath[0] === ".") {
+    modulePath = path.resolve(process.cwd(), modulePath);
+  } else if (modulePath[0] !== "/") {
+    modulePath = lotus.path + "/" + modulePath;
   }
-  path = Path.join(path, ".git");
-  return syncFs.isDir(path);
+  modulePath = path.join(modulePath, ".git");
+  return fs.isDir(modulePath);
 };
 
 //# sourceMappingURL=../../map/src/isRepo.map

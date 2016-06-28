@@ -1,38 +1,25 @@
-var assertTypes, exec, find, isType, optionTypes;
+var assertType, exec, find, os;
 
 find = require("finder").find;
 
-assertTypes = require("assertTypes");
-
-isType = require("isType");
+assertType = require("assertType");
 
 exec = require("exec");
 
-optionTypes = {
-  modulePath: String,
-  from: String,
-  to: String.Maybe
-};
+os = require("os");
 
-module.exports = function(options) {
-  var from, modulePath, to;
-  if (isType(options, String)) {
-    options = {
-      modulePath: arguments[0],
-      from: arguments[1],
-      to: arguments[2]
-    };
+module.exports = function(modulePath, firstCommit, lastCommit) {
+  if (lastCommit == null) {
+    lastCommit = "HEAD";
   }
-  assertTypes(options, optionTypes);
-  modulePath = options.modulePath, from = options.from, to = options.to;
-  if (to == null) {
-    to = "HEAD";
-  }
-  return exec("git diff --raw " + from + ".." + to, {
+  assertType(modulePath, String);
+  assertType(firstCommit, String);
+  assertType(lastCommit, String);
+  return exec.async("git diff --raw " + firstCommit + ".." + lastCommit, {
     cwd: modulePath
   }).then(function(stdout) {
     var lines, regex;
-    lines = stdout.split("\n");
+    lines = stdout.split(os.EOL);
     regex = /^:[0-9]{6} [0-9]{6} [0-9a-z]{7}\.\.\. [0-9a-z]{7}\.\.\. (.)\t(.+)$/;
     return lines.map(function(line) {
       var path, status;

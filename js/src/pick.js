@@ -1,29 +1,55 @@
-var assertTypes, exec, optionTypes;
+var CommitRange, MergeStrategy, assertType, assertTypes, exec, isClean, isType, optionTypes;
 
 assertTypes = require("assertTypes");
 
+assertType = require("assertType");
+
+isType = require("isType");
+
 exec = require("exec");
 
+MergeStrategy = require("./MergeStrategy");
+
+CommitRange = require("./CommitRange");
+
+isClean = require("./isClean");
+
 optionTypes = {
-  modulePath: String,
-  commit: String,
-  theirs: Boolean.Maybe,
-  ours: Boolean.Maybe
+  strategy: MergeStrategy.Maybe
 };
 
-module.exports = function(options) {
-  var args, commit, modulePath, ours, theirs;
+module.exports = function(modulePath, commit, options) {
+  var args;
+  if (options == null) {
+    options = {};
+  }
+  assertType(modulePath, String);
+  assertType(commit, [String, CommitRange]);
   assertTypes(options, optionTypes);
-  modulePath = options.modulePath, commit = options.commit, theirs = options.theirs, ours = options.ours;
-  args = [commit];
-  if (ours) {
-    args.push("-X", "ours");
+  if (isType(commit, Object)) {
+    args = [commit.from + ".." + commit.to];
+  } else {
+    args = [commit];
   }
-  if (theirs) {
-    args.push("-X", "theirs");
+  if (options.strategy) {
+    args.push("-X", options.strategy);
   }
-  return exec("git cherry-pick", args, {
+  return exec.async("git cherry-pick", args, {
     cwd: modulePath
+  }).then(function() {
+    return isClean(modulePath);
+  }).fail(function(error) {
+    if (/error: could not apply/.test(error.message)) {
+      return false;
+    }
+    throw error;
+  }).then(function(clean) {
+    if (!clean) {
+      return;
+    }
+    return exec.async("git cherry-pick --continue", {
+      cwd: modulePath
+    });
   });
 };
 

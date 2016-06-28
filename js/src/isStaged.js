@@ -8,9 +8,7 @@ getStatus = require("./getStatus");
 
 module.exports = function(modulePath) {
   assertType(modulePath, String);
-  return getStatus({
-    modulePath: modulePath
-  }).then(function(status) {
+  return getStatus(modulePath).then(function(status) {
     return hasKeys(status.staged);
   });
 };

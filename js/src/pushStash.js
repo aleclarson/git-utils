@@ -1,30 +1,27 @@
-var assertTypes, exec, isType, optionTypes;
+var assertType, assertTypes, exec, optionTypes;
 
 assertTypes = require("assertTypes");
 
-isType = require("isType");
+assertType = require("assertType");
 
 exec = require("exec");
 
 optionTypes = {
-  modulePath: String,
   keepIndex: Boolean.Maybe
 };
 
-module.exports = function(options) {
-  var args, keepIndex, modulePath;
-  if (isType(options, String)) {
-    options = {
-      modulePath: options
-    };
+module.exports = function(modulePath, options) {
+  var args;
+  if (options == null) {
+    options = {};
   }
+  assertType(modulePath, String);
   assertTypes(options, optionTypes);
-  modulePath = options.modulePath, keepIndex = options.keepIndex;
   args = [];
-  if (keepIndex) {
+  if (options.keepIndex) {
     args.push("--keep-index");
   }
-  return exec("git stash", args, {
+  return exec.async("git stash", args, {
     cwd: modulePath
   }).fail(function(error) {
     if (/bad revision 'HEAD'/.test(error.message)) {

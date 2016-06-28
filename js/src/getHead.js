@@ -1,10 +1,10 @@
-var Promise, assertTypes, exec, git, isType, optionTypes;
+var Promise, assertType, assertTypes, exec, git, optionTypes;
 
 assertTypes = require("assertTypes");
 
-Promise = require("Promise");
+assertType = require("assertType");
 
-isType = require("isType");
+Promise = require("Promise");
 
 exec = require("exec");
 
@@ -14,31 +14,24 @@ git = {
 };
 
 optionTypes = {
-  modulePath: String,
-  remoteName: String.Maybe,
-  branchName: String.Maybe
+  remote: String.Maybe,
+  message: Boolean.Maybe
 };
 
-module.exports = function(options) {
-  var branchName, modulePath, remoteName;
-  if (isType(options, String)) {
-    options = {
-      modulePath: arguments[0],
-      remoteName: arguments[1],
-      branchName: arguments[2]
-    };
+module.exports = function(modulePath, branchName, options) {
+  if (options == null) {
+    options = {};
   }
+  assertType(modulePath, String);
+  assertType(branchName, String.Maybe);
   assertTypes(options, optionTypes);
-  modulePath = options.modulePath, remoteName = options.remoteName, branchName = options.branchName;
-  if (remoteName == null) {
-    remoteName = "origin";
-  }
   return Promise["try"](function() {
     if (branchName) {
       return git.hasBranch(modulePath, branchName).then(function(hasBranch) {
-        if (!hasBranch) {
-          return branchName = null;
+        if (hasBranch) {
+          return;
         }
+        return branchName = null;
       });
     }
     return git.getBranch(modulePath).then(function(currentBranch) {
@@ -49,16 +42,20 @@ module.exports = function(options) {
     if (branchName === null) {
       return null;
     }
-    args = ["-1", "--pretty=oneline", remoteName + "/" + branchName];
-    return exec("git log", args, {
+    args = ["-1", "--pretty=oneline", (options.remote || "origin") + "/" + branchName];
+    return exec.async("git log", args, {
       cwd: modulePath
     }).then(function(stdout) {
-      var spaceIndex;
-      spaceIndex = stdout.indexOf(" ");
-      return {
-        id: stdout.slice(0, spaceIndex),
-        message: stdout.slice(spaceIndex + 1)
-      };
+      var id, separator;
+      separator = stdout.indexOf(" ");
+      id = stdout.slice(0, separator);
+      if (options.message) {
+        return {
+          id: id,
+          message: stdout.slice(separator + 1)
+        };
+      }
+      return id;
     });
   });
 };

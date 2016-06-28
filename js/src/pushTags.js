@@ -1,40 +1,31 @@
-var assertTypes, exec, isType, log, optionTypes;
+var assertType, assertTypes, exec, optionTypes, os;
 
 assertTypes = require("assertTypes");
 
-isType = require("isType");
+assertType = require("assertType");
 
 exec = require("exec");
 
-log = require("log");
+os = require("os");
 
 optionTypes = {
-  modulePath: String,
-  remoteName: String.Maybe,
-  force: Boolean.Maybe
+  force: Boolean.Maybe,
+  remote: String.Maybe
 };
 
-module.exports = function(options) {
-  var args, force, modulePath, remoteName;
-  if (isType(options, String)) {
-    options = {
-      modulePath: options
-    };
-  }
+module.exports = function(modulePath, options) {
+  var args;
+  assertType(modulePath, String);
   assertTypes(options, optionTypes);
-  modulePath = options.modulePath, remoteName = options.remoteName, force = options.force;
-  if (remoteName == null) {
-    remoteName = "origin";
-  }
-  args = [remoteName, "--tags"];
-  if (force) {
+  args = [options.remote || "origin", "--tags"];
+  if (options.force) {
     args.push("-f");
   }
-  return exec("git push", args, {
+  return exec.async("git push", args, {
     cwd: modulePath
   }).fail(function(error) {
     var lines;
-    lines = error.message.split(log.ln);
+    lines = error.message.split(os.EOL);
     if (/\(already exists\)$/.test(lines[1])) {
       throw Error("Tag already exists!");
     }

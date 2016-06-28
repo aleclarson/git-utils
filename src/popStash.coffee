@@ -6,4 +6,4 @@ module.exports = (modulePath) ->
 
   assertType modulePath, String
 
-  exec "git stash pop", cwd: modulePath
+  exec.async "git stash pop", cwd: modulePath

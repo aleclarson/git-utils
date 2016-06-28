@@ -1,21 +1,40 @@
 
 assertTypes = require "assertTypes"
+assertType = require "assertType"
+isType = require "isType"
 exec = require "exec"
 
+MergeStrategy = require "./MergeStrategy"
+CommitRange = require "./CommitRange"
+isClean = require "./isClean"
+
 optionTypes =
-  modulePath: String
-  commit: String
-  theirs: Boolean.Maybe
-  ours: Boolean.Maybe
+  strategy: MergeStrategy.Maybe
 
-module.exports = (options) ->
+module.exports = (modulePath, commit, options = {}) ->
 
+  assertType modulePath, String
+  assertType commit, [ String, CommitRange ]
   assertTypes options, optionTypes
 
-  { modulePath, commit, theirs, ours } = options
+  if isType commit, Object
+    args = [ commit.from + ".." + commit.to ]
+  else args = [ commit ]
 
-  args = [ commit ]
-  args.push "-X", "ours" if ours
-  args.push "-X", "theirs" if theirs
+  if options.strategy
+    args.push "-X", options.strategy
 
-  exec "git cherry-pick", args, { cwd: modulePath }
+  exec.async "git cherry-pick", args, cwd: modulePath
+
+  .then -> isClean modulePath
+
+  .fail (error) ->
+
+    if /error: could not apply/.test error.message
+      return no # 'git cherry-pick' throws when there are merge conflicts
+
+    throw error
+
+  .then (clean) ->
+    return if not clean
+    exec.async "git cherry-pick --continue", cwd: modulePath

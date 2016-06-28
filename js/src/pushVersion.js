@@ -1,103 +1,93 @@
-var Path, addCommit, addTag, assert, assertStaged, assertTypes, exec, findVersion, log, optionTypes, popCommit, pushHead, pushTags, removeTag, semver, stageAll;
+var assert, assertType, assertTypes, exec, git, optionTypes, os, semver;
 
 assertTypes = require("assertTypes");
+
+assertType = require("assertType");
 
 semver = require("node-semver");
 
 assert = require("assert");
 
-Path = require("path");
-
 exec = require("exec");
 
-log = require("log");
+os = require("os");
 
-assertStaged = require("./assertStaged");
-
-findVersion = require("./findVersion");
-
-removeTag = require("./removeTag");
-
-addCommit = require("./addCommit");
-
-popCommit = require("./popCommit");
-
-stageAll = require("./stageAll");
-
-pushHead = require("./pushHead");
-
-pushTags = require("./pushTags");
-
-addTag = require("./addTag");
-
-optionTypes = {
-  modulePath: String,
-  remoteName: String,
-  version: String,
-  message: String.Maybe,
-  force: Boolean.Maybe
+git = {
+  addTag: require("./addTag"),
+  commit: require("./commit"),
+  deleteTag: require("./deleteTag"),
+  findVersion: require("./findVersion"),
+  isStaged: require("./isStaged"),
+  pushBranch: require("./pushBranch"),
+  pushTags: require("./pushTags"),
+  resetBranch: require("./resetBranch")
 };
 
-module.exports = function(options) {
-  var force, message, modulePath, remoteName, version;
+optionTypes = {
+  force: Boolean.Maybe,
+  remote: String.Maybe,
+  message: String.Maybe
+};
+
+module.exports = function(modulePath, version, options) {
+  assertType(modulePath, String);
+  assertType(version, String);
   assertTypes(options, optionTypes);
-  modulePath = options.modulePath, remoteName = options.remoteName, version = options.version, message = options.message, force = options.force;
   assert(semver.valid(version), "Invalid version formatting!");
-  return assertStaged(modulePath).then(function() {
-    return findVersion(modulePath, version);
+  if (options.remote == null) {
+    options.remote = "origin";
+  }
+  return Promise.assert("No changes were staged!", function() {
+    return git.isStaged(modulePath);
+  }).then(function() {
+    return git.findVersion(modulePath, version);
   }).then(function(arg) {
     var index, versions;
     index = arg.index, versions = arg.versions;
     if (index < 0) {
       return;
     }
-    if (!force) {
+    if (!options.force) {
       throw Error("Version already exists!");
     }
     if (index !== versions.length - 1) {
       throw Error("Can only overwrite the most recent version!");
     }
-    return popCommit(modulePath);
+    return git.resetBranch(modulePath, "HEAD^");
   }).then(function() {
-    message = version + (message ? log.ln + message : "");
-    return addCommit(modulePath, message);
+    var message;
+    message = version;
+    if (options.message) {
+      message += os.EOL + options.message;
+    }
+    return git.commit(modulePath, message);
   }).then(function() {
-    return addTag({
-      modulePath: modulePath,
-      tagName: version,
-      force: force
+    return git.addTag(modulePath, version, {
+      force: options.force
     });
   }).then(function() {
-    return pushHead({
-      modulePath: modulePath,
-      remoteName: remoteName,
-      force: force
+    return git.pushBranch(modulePath, options.remote, {
+      force: options.force
     });
   }).then(function() {
-    return pushTags({
-      modulePath: modulePath,
-      remoteName: remoteName,
-      force: force
+    return git.pushTags(modulePath, options.remote, {
+      force: options.force
     });
   }).fail(function(error) {
     if (/^fatal: The current branch [^\s]+ has no upstream branch/.test(error.message)) {
-      return pushHead({
-        modulePath: modulePath,
-        remoteName: remoteName,
-        force: force,
+      return git.pushBranch(modulePath, options.remote, {
+        force: options.force,
         upstream: true
       }).then(function() {
-        return pushTags({
-          modulePath: modulePath,
-          remoteName: remoteName,
-          force: force
+        return git.pushTags(modulePath, options.remote, {
+          force: options.force
         });
       });
     }
     throw error;
   }).fail(function(error) {
-    return popCommit(modulePath).then(function() {
-      return removeTag(modulePath, version);
+    return git.resetBranch(modulePath, "HEAD^").then(function() {
+      return git.deleteTag(modulePath, version);
     }).then(function() {
       throw error;
     });

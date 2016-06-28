@@ -6,9 +6,8 @@ getStatus = require("./getStatus");
 
 module.exports = function(modulePath) {
   assertType(modulePath, String);
-  return getStatus({
-    modulePath: modulePath,
-    parseOutput: false
+  return getStatus(modulePath, {
+    raw: true
   }).then(function(status) {
     return status.length === 0;
   });
