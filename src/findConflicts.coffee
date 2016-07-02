@@ -32,22 +32,28 @@ findConflict = (contents, startOffset) ->
 
   findOurs.target = contents
   findOurs.offset = startOffset
+
   ours.origin = findOurs.next()
   startOffset = findOurs.offset
+
   findOurs.target = null
   return null if not ours.origin?
 
   findMiddle.target = contents
-  findMiddle.offset = findOurs.offset
+  findMiddle.offset = startOffset
+
   middle = findMiddle.next()
   middleOffset = findMiddle.offset
+
   findMiddle.target = null
   return null if not middle
 
   findTheirs.target = contents
-  findTheirs.offset = findMiddle.offset
+  findTheirs.offset = middleOffset
+
   theirs.origin = findTheirs.next()
   endOffset = findTheirs.offset
+
   findTheirs.target = null
   return null if not theirs.origin?
 

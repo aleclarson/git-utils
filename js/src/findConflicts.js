@@ -51,7 +51,7 @@ findConflict = function(contents, startOffset) {
     return null;
   }
   findMiddle.target = contents;
-  findMiddle.offset = findOurs.offset;
+  findMiddle.offset = startOffset;
   middle = findMiddle.next();
   middleOffset = findMiddle.offset;
   findMiddle.target = null;
@@ -59,7 +59,7 @@ findConflict = function(contents, startOffset) {
     return null;
   }
   findTheirs.target = contents;
-  findTheirs.offset = findMiddle.offset;
+  findTheirs.offset = middleOffset;
   theirs.origin = findTheirs.next();
   endOffset = findTheirs.offset;
   findTheirs.target = null;

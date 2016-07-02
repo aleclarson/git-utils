@@ -31,8 +31,8 @@ module.exports = (modulePath, version, options) ->
 
   options.remote ?= "origin"
 
-  Promise.assert "No changes were staged!", ->
-    git.isStaged modulePath
+  git.isStaged modulePath
+  .assert "No changes were staged!"
 
   .then ->
     git.findVersion modulePath, version

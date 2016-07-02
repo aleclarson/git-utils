@@ -19,9 +19,7 @@ quoteWrap = function(s) {
 module.exports = function(modulePath, message) {
   assertType(modulePath, String);
   assertType(message, String);
-  return Promise.assert("No changes were staged!", function() {
-    return isStaged(modulePath);
-  }).then(function() {
+  return isStaged(modulePath).assert("No changes were staged!").then(function() {
     var args, newline, paragraph;
     message = message.replace("'", "\\'");
     newline = message.indexOf(os.EOL);

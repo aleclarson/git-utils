@@ -15,15 +15,12 @@ module.exports = (modulePath, message) ->
   assertType modulePath, String
   assertType message, String
 
-  Promise.assert "No changes were staged!", ->
-    isStaged modulePath
+  isStaged modulePath
+  .assert "No changes were staged!"
 
   .then ->
-
     message = message.replace "'", "\\'"
-
     newline = message.indexOf os.EOL
-
     if newline >= 0
       paragraph = message.slice newline + 1
       message = message.slice 0, newline

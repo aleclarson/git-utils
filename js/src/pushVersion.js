@@ -37,9 +37,7 @@ module.exports = function(modulePath, version, options) {
   if (options.remote == null) {
     options.remote = "origin";
   }
-  return Promise.assert("No changes were staged!", function() {
-    return git.isStaged(modulePath);
-  }).then(function() {
+  return git.isStaged(modulePath).assert("No changes were staged!").then(function() {
     return git.findVersion(modulePath, version);
   }).then(function(arg) {
     var index, versions;

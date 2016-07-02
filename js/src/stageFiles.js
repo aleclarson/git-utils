@@ -12,6 +12,11 @@ module.exports = function(modulePath, files) {
   }
   return exec.async("git add", files, {
     cwd: modulePath
+  }).fail(function(error) {
+    if (/The following paths are ignored/.test(error.message)) {
+      return;
+    }
+    throw error;
   });
 };
 

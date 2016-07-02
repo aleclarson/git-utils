@@ -59,8 +59,8 @@ module.exports = (modulePath, options) ->
     renameCommit: null
     mergeCommit: null
 
-  Promise.assert "The current branch cannot have any uncommitted changes!", ->
-    git.isClean modulePath
+  git.isClean modulePath
+  .assert "The current branch cannot have any uncommitted changes!"
 
   # Remember the starting branch.
   .then ->

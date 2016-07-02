@@ -69,9 +69,7 @@ module.exports = function(modulePath, options) {
     renameCommit: null,
     mergeCommit: null
   };
-  return Promise.assert("The current branch cannot have any uncommitted changes!", function() {
-    return git.isClean(modulePath);
-  }).then(function() {
+  return git.isClean(modulePath).assert("The current branch cannot have any uncommitted changes!").then(function() {
     return git.getBranch(modulePath).then(function(currentBranch) {
       return state.startBranch = currentBranch;
     });

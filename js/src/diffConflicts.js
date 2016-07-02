@@ -1,4 +1,4 @@
-var diffLines, findConflicts, fs, os;
+var conflict, diffLines, findConflicts, fs, os;
 
 diffLines = require("diff").diffLines;
 
@@ -9,64 +9,74 @@ os = require("os");
 findConflicts = require("./findConflicts");
 
 module.exports = function(filePath, options) {
-  var after, code, conflicts, merged, offset;
+  var after, code, offset, results;
   if (options == null) {
     options = {};
   }
   code = fs.read(filePath);
-  conflicts = findConflicts({
-    code: code
-  });
-  if (!conflicts.length) {
-    return null;
-  }
   offset = 0;
-  merged = conflicts.map(function(arg) {
-    var before, chunk, conflict, i, len, ours, range, ref, resolveConflict, results, theirs;
+  results = [];
+  findConflicts({
+    code: code
+  }).forEach(function(arg) {
+    var before, chunk, conflicted, i, len, ours, range, ref, theirs;
     ours = arg.ours, theirs = arg.theirs, range = arg.range;
-    results = [];
     before = code.slice(offset, range.start);
     if (before.trim().length) {
       results.push(before);
       offset = range.end;
     }
-    conflict = [];
-    resolveConflict = function() {
-      if (!conflict.length) {
-        return;
-      }
-      if (!conflict[0]) {
-        conflict[0] = ["<<<<<<< ", ours.origin, os.EOL].join("");
-      } else if (!conflict[1]) {
-        conflict[1] = ["=======", os.EOL, ">>>>>>> ", theirs.origin, os.EOL].join("");
-      }
-      results.push(conflict.join(""));
-      conflict.length = 0;
-    };
     ref = diffLines(theirs.code, ours.code);
     for (i = 0, len = ref.length; i < len; i++) {
       chunk = ref[i];
       if (chunk.removed) {
         conflict[1] = ["=======", os.EOL, chunk.value, ">>>>>>> ", theirs.origin, os.EOL].join("");
-      } else if (chunk.added) {
-        conflict[0] = ["<<<<<<< ", ours.origin, os.EOL, chunk.value].join("");
-        resolveConflict();
-      } else {
-        resolveConflict();
-        results.push(chunk.value);
+        continue;
       }
+      if (chunk.added) {
+        conflict[0] = ["<<<<<<< ", ours.origin, os.EOL, chunk.value].join("");
+        conflicted = conflict.resolve(ours, theirs);
+        if (conflicted) {
+          results.push(conflicted);
+        }
+        continue;
+      }
+      conflicted = conflict.resolve(ours, theirs);
+      if (conflicted) {
+        results.push(conflicted);
+      }
+      results.push(chunk.value);
     }
-    return results.join("");
+    conflicted = conflict.resolve(ours, theirs);
+    if (conflicted) {
+      return results.push(conflicted);
+    }
   });
   after = code.slice(offset);
   if (after.length) {
-    merged.push(after);
+    results.push(after);
   }
-  code = merged.join("");
   if (options.overwrite !== false) {
-    fs.write(filePath, code);
+    fs.write(filePath, results.join(""));
   }
-  return code;
+  return results;
+};
+
+conflict = [];
+
+conflict.resolve = function(ours, theirs) {
+  var conflicted;
+  if (!conflict.length) {
+    return;
+  }
+  if (!conflict[0]) {
+    conflict[0] = ["<<<<<<< ", ours.origin, os.EOL].join("");
+  } else if (!conflict[1]) {
+    conflict[1] = ["=======", os.EOL, ">>>>>>> ", theirs.origin, os.EOL].join("");
+  }
+  conflicted = conflict.join("");
+  conflict.length = 0;
+  return conflicted;
 };
 
 //# sourceMappingURL=../../map/src/diffConflicts.map

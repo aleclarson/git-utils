@@ -27,9 +27,7 @@ module.exports = function(modulePath, options) {
   assertType(modulePath, String);
   assertTypes(options, optionTypes);
   startBranch = null;
-  return Promise.assert("The current branch cannot have any uncommitted changes!", function() {
-    return git.isClean(modulePath);
-  }).then(function() {
+  return git.isClean(modulePath).assert("The current branch cannot have any uncommitted changes!").then(function() {
     return git.getBranch(modulePath).then(function(currentBranch) {
       return startBranch = currentBranch;
     });
