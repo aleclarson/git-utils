@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "isStaged.js",
+  "sourceRoot": "../../src",
+  "sources": [
+    "isStaged.coffee"
+  ],
+  "names": [],
+  "mappings": "AACA,IAAA;;AAAA,UAAA,GAAa,OAAA,CAAQ,YAAR;;AACb,OAAA,GAAU,OAAA,CAAQ,SAAR;;AAEV,SAAA,GAAY,OAAA,CAAQ,aAAR;;AAEZ,MAAM,CAAC,OAAP,GAAiB,SAAC,UAAD;EAEf,UAAA,CAAW,UAAX,EAAuB,MAAvB;SAEA,SAAA,CAAU,UAAV,CAEA,CAAC,IAFD,CAEM,SAAC,MAAD;WACJ,OAAA,CAAQ,MAAM,CAAC,MAAf;EADI,CAFN;AAJe"
+}
