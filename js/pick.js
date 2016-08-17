@@ -24,7 +24,7 @@ module.exports = function(modulePath, commit, options) {
     options = {};
   }
   assertType(modulePath, String);
-  assertType(commit, [String, CommitRange]);
+  assertType(commit, String.or(CommitRange));
   assertTypes(options, optionTypes);
   if (isType(commit, Object)) {
     args = [commit.from + ".." + commit.to];

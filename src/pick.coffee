@@ -14,7 +14,7 @@ optionTypes =
 module.exports = (modulePath, commit, options = {}) ->
 
   assertType modulePath, String
-  assertType commit, [ String, CommitRange ]
+  assertType commit, String.or CommitRange
   assertTypes options, optionTypes
 
   if isType commit, Object

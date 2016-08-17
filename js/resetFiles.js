@@ -16,7 +16,7 @@ optionTypes = {
 module.exports = function(modulePath, files, options) {
   var args;
   assertType(modulePath, String);
-  assertType(files, [String, Array]);
+  assertType(files, String.or(Array));
   assertTypes(options, optionTypes);
   if (!Array.isArray(files)) {
     files = [files];

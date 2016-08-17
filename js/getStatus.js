@@ -1,4 +1,4 @@
-var Finder, assert, assertType, assertTypes, escapeStringRegExp, exec, findNewPath, findPath, findStagingStatus, findWorkingStatus, isType, optionTypes, ref, run, statusMap;
+var Finder, assert, assertType, assertTypes, escapeStringRegExp, exec, findNewPath, findPath, findStagingStatus, findWorkingStatus, isType, optionTypes, ref, statusMap;
 
 escapeStringRegExp = require("escape-string-regexp");
 
@@ -13,8 +13,6 @@ isType = require("isType");
 assert = require("assert");
 
 exec = require("exec");
-
-run = require("run");
 
 optionTypes = {
   raw: Boolean.Maybe
@@ -102,7 +100,7 @@ statusMap = {
   "?": "untracked"
 };
 
-ref = run(function() {
+ref = (function() {
   var charRegex, chars, regex;
   chars = Object.keys(statusMap);
   charRegex = "([" + escapeStringRegExp(chars.join("")) + "\\s]{1})";
@@ -125,6 +123,6 @@ ref = run(function() {
       group: 5
     })
   };
-}), findStagingStatus = ref.findStagingStatus, findWorkingStatus = ref.findWorkingStatus, findPath = ref.findPath, findNewPath = ref.findNewPath;
+})(), findStagingStatus = ref.findStagingStatus, findWorkingStatus = ref.findWorkingStatus, findPath = ref.findPath, findNewPath = ref.findNewPath;
 
 //# sourceMappingURL=map/getStatus.map

@@ -6,7 +6,7 @@ exec = require("exec");
 
 module.exports = function(modulePath, files) {
   assertType(modulePath, String);
-  assertType(files, [String, Array]);
+  assertType(files, String.or(Array));
   if (!Array.isArray(files)) {
     files = [files];
   }

@@ -6,7 +6,6 @@ Finder = require "finder"
 isType = require "isType"
 assert = require "assert"
 exec = require "exec"
-run = require "run"
 
 optionTypes =
   raw: Boolean.Maybe
@@ -80,7 +79,7 @@ statusMap =
   "U": "unmerged"
   "?": "untracked"
 
-{ findStagingStatus, findWorkingStatus, findPath, findNewPath } = run ->
+{ findStagingStatus, findWorkingStatus, findPath, findNewPath } = do ->
 
   chars = Object.keys statusMap
   charRegex = "([" + escapeStringRegExp(chars.join "") + "\\s]{1})"

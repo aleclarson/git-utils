@@ -21,7 +21,7 @@ module.exports = function(modulePath, commit, options) {
     commit = "HEAD";
   }
   assertType(modulePath, String);
-  assertType(commit, [String, Null]);
+  assertType(commit, String.or(Null));
   assertTypes(options, optionTypes);
   if (commit === null) {
     return exec.async("git update-ref -d HEAD", {

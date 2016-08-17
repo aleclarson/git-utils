@@ -14,7 +14,7 @@ module.exports = (modulePath, commit, options = {}) ->
   commit = "HEAD" if commit is undefined
 
   assertType modulePath, String
-  assertType commit, [ String, Null ]
+  assertType commit, String.or Null
   assertTypes options, optionTypes
 
   if commit is null

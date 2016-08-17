@@ -11,7 +11,7 @@ optionTypes =
 module.exports = (modulePath, files, options) ->
 
   assertType modulePath, String
-  assertType files, [ String, Array ]
+  assertType files, String.or Array
   assertTypes options, optionTypes
 
   if not Array.isArray files
