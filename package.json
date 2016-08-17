@@ -1,7 +1,7 @@
 {
   "name": "git-utils",
   "version": "1.0.0",
-  "main": "js/src/index",
+  "main": "js/index",
   "dependencies": {
     "Maybe": "aleclarson/Maybe#1.0.1",
     "Null": "aleclarson/Null#1.0.0",
