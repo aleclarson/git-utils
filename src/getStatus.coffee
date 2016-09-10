@@ -58,13 +58,15 @@ module.exports = (modulePath, options = {}) ->
 
       if (stagingStatus isnt " ") and (stagingStatus isnt "?")
         status = statusMap[stagingStatus]
-        assert status, { reason: "Unrecognized status!", stagingStatus, line }
+        if not status
+          throw Error "Unrecognized status!"
         files = results.staged[status] ?= []
         files.push file
 
       if (workingStatus isnt " ") and (workingStatus isnt "?")
         status = statusMap[workingStatus]
-        assert status, { reason: "Unrecognized status!", workingStatus, line }
+        if not status
+          throw Error "Unrecognized status!"
         files = results.tracked[status] ?= []
         files.push file
 

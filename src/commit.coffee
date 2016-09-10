@@ -8,8 +8,6 @@ os = require "os"
 
 isStaged = require "./isStaged"
 
-quoteWrap = (s) -> "\"#{s}\""
-
 module.exports = (modulePath, message) ->
 
   assertType modulePath, String
@@ -25,8 +23,8 @@ module.exports = (modulePath, message) ->
       paragraph = message.slice newline + 1
       message = message.slice 0, newline
 
-    args = [ "-m", quoteWrap(message) ]
-    args.push "-m", quoteWrap(paragraph) if paragraph
+    args = [ "-m", message ]
+    paragraph and args.push "-m", paragraph
 
     exec.async "git commit", args, cwd: modulePath
 

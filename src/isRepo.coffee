@@ -1,8 +1,11 @@
 
+assertType = require "assertType"
 path = require "path"
 fs = require "io/sync"
 
-module.exports = (modulePath) ->
+isRepo = (modulePath) ->
+
+  assertType modulePath, String
 
   if modulePath[0] is "."
     modulePath = path.resolve process.cwd(), modulePath
@@ -13,3 +16,5 @@ module.exports = (modulePath) ->
   modulePath = path.join modulePath, ".git"
 
   return fs.isDir modulePath
+
+module.exports = isRepo
