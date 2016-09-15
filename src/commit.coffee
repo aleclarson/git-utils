@@ -17,7 +17,6 @@ module.exports = (modulePath, message) ->
   .assert "No changes were staged!"
 
   .then ->
-    message = message.replace "'", "\\'"
     newline = message.indexOf os.EOL
     if newline >= 0
       paragraph = message.slice newline + 1
