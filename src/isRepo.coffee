@@ -10,8 +10,8 @@ isRepo = (modulePath) ->
   if modulePath[0] is "."
     modulePath = path.resolve process.cwd(), modulePath
 
-  else if modulePath[0] isnt "/"
-    modulePath = lotus.path + "/" + modulePath
+  else if not path.isAbsolute modulePath
+    modulePath = path.resolve modulePath
 
   modulePath = path.join modulePath, ".git"
 
