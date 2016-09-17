@@ -6,7 +6,7 @@ exec = require "exec"
 optionTypes =
   force: Boolean.Maybe
 
-module.exports = (modulePath, tagName, options) ->
+module.exports = (modulePath, tagName, options = {}) ->
 
   assertType modulePath, String
   assertType tagName, String

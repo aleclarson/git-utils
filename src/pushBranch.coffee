@@ -12,7 +12,7 @@ optionTypes =
   upstream: Boolean.Maybe
   force: Boolean.Maybe
 
-module.exports = (modulePath, remoteName, options) ->
+module.exports = (modulePath, remoteName, options = {}) ->
 
   if isType remoteName, Object
     options = remoteName

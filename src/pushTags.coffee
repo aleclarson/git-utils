@@ -8,7 +8,7 @@ optionTypes =
   force: Boolean.Maybe
   remote: String.Maybe
 
-module.exports = (modulePath, options) ->
+module.exports = (modulePath, options = {}) ->
 
   assertType modulePath, String
   assertTypes options, optionTypes

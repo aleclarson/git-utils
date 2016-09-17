@@ -21,7 +21,7 @@ optionTypes =
   remote: String.Maybe
   message: String.Maybe
 
-module.exports = (modulePath, version, options) ->
+module.exports = (modulePath, version, options = {}) ->
 
   assertType modulePath, String
   assertType version, String

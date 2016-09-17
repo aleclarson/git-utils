@@ -12,7 +12,7 @@ git =
 optionTypes =
   force: Boolean.Maybe
 
-module.exports = (modulePath, branchName, options) ->
+module.exports = (modulePath, branchName, options = {}) ->
 
   assertType modulePath, String
   assertType branchName, String
