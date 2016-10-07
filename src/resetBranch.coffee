@@ -9,23 +9,23 @@ optionTypes =
 
 # TODO: Test with `commit` being a non-existing commit.
 # TODO: Test with `commit` being a non-existing branch.
-module.exports = (modulePath, commit, options = {}) ->
+module.exports = (modulePath, commit, options) ->
 
-  commit = "HEAD" if commit is undefined
+  if arguments.length < 3
+    options = commit or {}
+    commit = undefined
+  else
+    options ?= {}
 
   assertType modulePath, String
   assertType commit, String.or Null
   assertTypes options, optionTypes
 
   if commit is null
-    return exec.async "git update-ref -d HEAD", cwd: modulePath
-    .then ->
-      return if not options.clean
-      exec.async "git reset --hard", cwd: modulePath
+    exec.async "git update-ref -d HEAD", {cwd: modulePath}
+    .then -> options.clean and exec.async "git reset --hard", {cwd: modulePath}
 
-  args = [
-    if options.clean then "--hard" else "--soft"
-    commit or HEAD
-  ]
-
-  exec.async "git reset", args, cwd: modulePath
+  else
+    hardness = if options.clean then "--hard" else "--soft"
+    exec.async "git reset", [hardness, commit or "HEAD"], {cwd: modulePath}
+    # TODO: Resolve with the new HEAD commit
