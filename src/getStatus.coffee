@@ -9,11 +9,31 @@ exec = require "exec"
 
 optionTypes =
   raw: Boolean.Maybe
+  remote: Boolean.Maybe
 
 module.exports = (modulePath, options = {}) ->
-
   assertType modulePath, String
   assertTypes options, optionTypes
+  if options.remote
+  then getRemoteStatus modulePath
+  else getLocalStatus modulePath, options
+
+getRemoteStatus = (modulePath) ->
+
+  exec.async "git status --short --branch", cwd: modulePath
+
+  .then (stdout) ->
+    stdout = stdout.split("\n")[0]
+
+    findRemoteBranch = Finder /\.\.\.([^\s]+)/
+    findAhead = Finder "ahead ([0-9]+)"
+    findBehind = Finder "behind ([0-9]+)"
+
+    branch: findRemoteBranch stdout
+    ahead: Number findAhead stdout
+    behind: Number findBehind stdout
+
+getLocalStatus = (modulePath, options) ->
 
   exec.async "git status --porcelain", cwd: modulePath
 
