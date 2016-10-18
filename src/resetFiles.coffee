@@ -3,6 +3,7 @@ assertTypes = require "assertTypes"
 assertType = require "assertType"
 path = require "path"
 exec = require "exec"
+sync = require "sync"
 
 optionTypes =
   commit: String.Maybe
