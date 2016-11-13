@@ -28,13 +28,11 @@ module.exports = (modulePath, commit, options = {}) ->
 
   .then -> isClean modulePath
 
+  # `cherry-pick` prints to stderr for merge conflicts
   .fail (error) ->
-
-    if /error: could not apply/.test error.message
-      return no # 'git cherry-pick' throws when there are merge conflicts
-
+    return yes if /error: could not apply/.test error.message
     throw error
 
   .then (clean) ->
-    return if not clean
+    return if clean
     exec.async "git cherry-pick --continue", cwd: modulePath
