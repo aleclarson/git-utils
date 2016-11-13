@@ -1,6 +1,7 @@
 
 assertTypes = require "assertTypes"
 assertType = require "assertType"
+isType = require "isType"
 Null = require "Null"
 exec = require "exec"
 
@@ -11,9 +12,9 @@ optionTypes =
 # TODO: Test with `commit` being a non-existing branch.
 module.exports = (modulePath, commit, options) ->
 
-  if arguments.length < 3
-    options = commit or {}
-    commit = undefined
+  if isType commit, Object
+    options = commit
+    commit = "HEAD"
   else
     options ?= {}
 
@@ -27,5 +28,5 @@ module.exports = (modulePath, commit, options) ->
 
   else
     hardness = if options.clean then "--hard" else "--soft"
-    exec.async "git reset", [hardness, commit or "HEAD"], {cwd: modulePath}
+    exec.async "git reset", [hardness, commit], {cwd: modulePath}
     # TODO: Resolve with the new HEAD commit
