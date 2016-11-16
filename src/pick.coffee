@@ -17,9 +17,10 @@ module.exports = (modulePath, commit, options = {}) ->
   assertType commit, String.or CommitRange
   assertTypes options, optionTypes
 
-  if isType commit, Object
-    args = [ commit.from + ".." + commit.to ]
-  else args = [ commit ]
+  args =
+    if isType commit, Object
+    then [ commit.from + ".." + commit.to ]
+    else [ commit ]
 
   if options.strategy
     args.push "-X", options.strategy
