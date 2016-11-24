@@ -5,7 +5,7 @@ exec = require "exec"
 module.exports = (modulePath, files) ->
 
   assertType modulePath, String
-  assertType files, [ String, Array ]
+  assertType files, String.or Array
 
   if not Array.isArray files
     files = [ files ]

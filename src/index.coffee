@@ -45,6 +45,9 @@ define exports,
   getBranches: lazy: ->
     require "./getBranches"
 
+  getConfig: lazy: ->
+    require "./getConfig"
+
   getHead: lazy: ->
     require "./getHead"
 

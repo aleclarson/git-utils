@@ -3,15 +3,16 @@ assertTypes = require "assertTypes"
 assertType = require "assertType"
 path = require "path"
 exec = require "exec"
+sync = require "sync"
 
 optionTypes =
   commit: String.Maybe
   dryRun: Boolean.Maybe
 
-module.exports = (modulePath, files, options) ->
+module.exports = (modulePath, files, options = {}) ->
 
   assertType modulePath, String
-  assertType files, [ String, Array ]
+  assertType files, String.or Array
   assertTypes options, optionTypes
 
   if not Array.isArray files
@@ -23,7 +24,8 @@ module.exports = (modulePath, files, options) ->
   files = sync.map files, (filePath) ->
     if filePath[0] is path.sep
       filePath = path.relative modulePath, filePath
-      assert filePath[0] isnt ".", "'filePath' must be a descendant of: '#{modulePath}'"
+      if filePath[0] is "."
+        throw Error "'filePath' must be a descendant of: '#{modulePath}'"
     return filePath
 
   args = [

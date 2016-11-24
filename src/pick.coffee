@@ -14,12 +14,13 @@ optionTypes =
 module.exports = (modulePath, commit, options = {}) ->
 
   assertType modulePath, String
-  assertType commit, [ String, CommitRange ]
+  assertType commit, String.or CommitRange
   assertTypes options, optionTypes
 
-  if isType commit, Object
-    args = [ commit.from + ".." + commit.to ]
-  else args = [ commit ]
+  args =
+    if isType commit, Object
+    then [ commit.from + ".." + commit.to ]
+    else [ commit ]
 
   if options.strategy
     args.push "-X", options.strategy
@@ -28,13 +29,11 @@ module.exports = (modulePath, commit, options = {}) ->
 
   .then -> isClean modulePath
 
+  # `cherry-pick` prints to stderr for merge conflicts
   .fail (error) ->
-
-    if /error: could not apply/.test error.message
-      return no # 'git cherry-pick' throws when there are merge conflicts
-
+    return yes if /error: could not apply/.test error.message
     throw error
 
   .then (clean) ->
-    return if not clean
+    return if clean
     exec.async "git cherry-pick --continue", cwd: modulePath

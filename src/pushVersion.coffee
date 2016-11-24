@@ -2,7 +2,6 @@
 assertTypes = require "assertTypes"
 assertType = require "assertType"
 semver = require "node-semver"
-assert = require "assert"
 exec = require "exec"
 os = require "os"
 
@@ -21,13 +20,14 @@ optionTypes =
   remote: String.Maybe
   message: String.Maybe
 
-module.exports = (modulePath, version, options) ->
+module.exports = (modulePath, version, options = {}) ->
 
   assertType modulePath, String
   assertType version, String
   assertTypes options, optionTypes
 
-  assert semver.valid(version), "Invalid version formatting!"
+  unless semver.valid version
+    throw Error "Invalid version formatting!"
 
   options.remote ?= "origin"
 

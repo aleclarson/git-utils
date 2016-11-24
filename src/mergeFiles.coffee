@@ -4,7 +4,6 @@ assertType = require "assertType"
 Promise = require "Promise"
 Random = require "random"
 isType = require "isType"
-assert = require "assert"
 path = require "path"
 sync = require "sync"
 log = require "log"
@@ -83,7 +82,8 @@ module.exports = (modulePath, options) ->
     Promise.chain renamedPaths, (newPath, oldPath) ->
       assertType newPath, String
       newFile = path.resolve options.ours, newPath
-      assert not fs.exists(newFile), "Cannot rename because another file is already named: '#{newFile}'"
+      if fs.exists newFile
+        throw Error "Cannot rename because another file is already named: '#{newFile}'"
       oldFile = path.resolve options.ours, oldPath
       if options.verbose
         log.moat 1
@@ -99,7 +99,8 @@ module.exports = (modulePath, options) ->
       Promise.chain unlinkedPaths, (filePath) ->
         assertType filePath, String
         ourFile = path.resolve options.ours, filePath
-        assert fs.exists(ourFile), "Cannot unlink a file that does not exist: '#{ourFile}'"
+        unless fs.exists ourFile
+          throw Error "Cannot unlink a file that does not exist: '#{ourFile}'"
         if options.verbose
           log.moat 1
           log.red "unlink "
@@ -120,15 +121,18 @@ module.exports = (modulePath, options) ->
       theirFile = path.resolve options.theirs, theirPath
 
       if fs.isFile ourFile
-        assert fs.isFile(theirFile), "Expected a file: '#{theirFile}'"
+        unless fs.isFile theirFile
+          throw Error "Expected a file: '#{theirFile}'"
         return fs.write ourFile, ""
 
-      assert fs.isDir(theirFile), "Expected a directory: '#{theirFile}'"
+      unless fs.isDir theirFile
+        throw Error "Expected a directory: '#{theirFile}'"
       for theirChild in fs.match path.join theirFile, "**/*"
         continue if fs.isDir theirChild
         ourChild = path.resolve ourFile, path.relative theirFile, theirChild
         continue if not fs.exists ourChild
-        assert not fs.isDir(ourChild), "Cannot use file to overwrite directory: '#{ourChild}'"
+        if fs.isDir ourChild
+          throw Error "Cannot use file to overwrite directory: '#{ourChild}'"
         fs.write ourChild, ""
       return
 
@@ -142,7 +146,8 @@ module.exports = (modulePath, options) ->
       ourPath = theirPath if ourPath is yes
 
       theirFile = path.resolve options.theirs, theirPath
-      assert fs.exists(theirFile), "Cannot merge a file that does not exist: '#{theirFile}'"
+      unless fs.exists theirFile
+        throw Error "Cannot merge a file that does not exist: '#{theirFile}'"
 
       ourFile = path.resolve options.ours, ourPath
 

@@ -12,7 +12,7 @@ git =
 optionTypes =
   force: Boolean.Maybe
 
-module.exports = (modulePath, branchName, options) ->
+module.exports = (modulePath, branchName, options = {}) ->
 
   assertType modulePath, String
   assertType branchName, String
@@ -46,8 +46,10 @@ module.exports = (modulePath, branchName, options) ->
       exec.async "git checkout", args, cwd: modulePath
 
       .fail (error) ->
+        {message} = error
 
         # 'git checkout' incorrectly prints to 'stderr'
-        return if /Switched to branch/.test error.message
+        return if message.startsWith "Switched to branch"
+        return if message.startsWith "Switched to a new branch"
 
         throw error

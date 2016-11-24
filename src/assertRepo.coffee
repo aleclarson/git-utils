@@ -1,6 +1,6 @@
 
 Promise = require "Promise"
-Path = require "path"
+path = require "path"
 exec = require "exec"
 log = require "log"
 
@@ -12,7 +12,7 @@ assertRepo = (modulePath) ->
   if isRepo modulePath
     return Promise()
 
-  moduleName = Path.resolve lotus.path, modulePath
+  moduleName = path.resolve modulePath
   log.moat 1
   log.red moduleName
   log.white " is not a git repository!"

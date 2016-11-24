@@ -4,6 +4,4 @@ OneOf = require "OneOf"
 
 MergeStrategy = OneOf "MergeStrategy", [ "ours", "theirs" ]
 
-MergeStrategy.Maybe = Maybe MergeStrategy
-
 module.exports = MergeStrategy
