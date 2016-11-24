@@ -24,7 +24,8 @@ module.exports = (modulePath, files, options = {}) ->
   files = sync.map files, (filePath) ->
     if filePath[0] is path.sep
       filePath = path.relative modulePath, filePath
-      assert filePath[0] isnt ".", "'filePath' must be a descendant of: '#{modulePath}'"
+      if filePath[0] is "."
+        throw Error "'filePath' must be a descendant of: '#{modulePath}'"
     return filePath
 
   args = [

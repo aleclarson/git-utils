@@ -2,7 +2,6 @@
 assertTypes = require "assertTypes"
 assertType = require "assertType"
 isType = require "isType"
-assert = require "assert"
 exec = require "exec"
 os = require "os"
 

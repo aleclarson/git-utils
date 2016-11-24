@@ -4,7 +4,6 @@ assertTypes = require "assertTypes"
 assertType = require "assertType"
 Finder = require "finder"
 isType = require "isType"
-assert = require "assert"
 exec = require "exec"
 
 optionTypes =

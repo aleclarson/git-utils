@@ -15,7 +15,6 @@
     "OneOf": "aleclarson/OneOf#1.0.0",
     "Promise": "aleclarson/Promise#2.0.0",
     "Shape": "aleclarson/Shape#2.0.0",
-    "assert": "aleclarson/assert#1.0.0",
     "assertType": "aleclarson/assertType#2.0.0",
     "assertTypes": "aleclarson/assertTypes#2.0.0",
     "define": "aleclarson/define#1.0.0",
