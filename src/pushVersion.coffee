@@ -20,6 +20,13 @@ optionTypes =
   remote: String.Maybe
   message: String.Maybe
 
+revertCommit = (modulePath) ->
+  git.resetBranch modulePath, "HEAD^"
+  .fail (error) ->
+    if /^fatal: ambiguous argument/.test error.message
+      return git.resetBranch modulePath, null
+    throw error
+
 module.exports = (modulePath, version, options = {}) ->
 
   assertType modulePath, String
@@ -34,28 +41,25 @@ module.exports = (modulePath, version, options = {}) ->
   git.isStaged modulePath
   .assert "No changes were staged!"
 
-  .then ->
-    git.findVersion modulePath, version
+  # Check if the given version already exists.
+  .then -> git.findVersion modulePath, version
+  .then (version, versions) ->
+    return if version is null
 
-  .then ({ index, versions }) ->
-
-    return if index < 0
-
-    if not options.force
-      throw Error "Version already exists!"
-
+    # Only the most recent version can be overwritten.
+    index = versions.indexOf version
     if index isnt versions.length - 1
       throw Error "Can only overwrite the most recent version!"
 
-    git.resetBranch modulePath, "HEAD^"
+    unless options.force
+      throw Error "Version already exists!"
+
+    revertCommit modulePath
 
   .then ->
-
     message = version
-
     if options.message
       message += os.EOL + options.message
-
     git.commit modulePath, message
 
   .then ->
@@ -67,8 +71,9 @@ module.exports = (modulePath, version, options = {}) ->
       force: options.force
 
   .then ->
-    git.pushTags modulePath, options.remote,
+    git.pushTags modulePath,
       force: options.force
+      remote: options.remote
 
   .fail (error) ->
 
@@ -80,18 +85,14 @@ module.exports = (modulePath, version, options = {}) ->
         upstream: yes
 
       .then ->
-        git.pushTags modulePath, options.remote,
+        git.pushTags modulePath,
           force: options.force
+          remote: options.remote
 
     throw error
 
   # In case 'pushBranch' fails again, we need a separate 'onRejected' handler.
   .fail (error) ->
-
-    git.resetBranch modulePath, "HEAD^"
-
-    .then ->
-      git.deleteTag modulePath, version
-
-    .then ->
-      throw error
+    revertCommit modulePath
+    .then -> git.deleteTag modulePath, version
+    .always -> throw error
