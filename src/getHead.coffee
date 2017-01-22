@@ -38,7 +38,9 @@ module.exports = (modulePath, branchName, options = {}) ->
     args = [
       "-1"
       "--pretty=oneline"
-      (options.remote or "origin") + "/" + branchName
+      if options.remote
+      then options.remote + "/" + branchName
+      else branchName
     ]
 
     exec.async "git log", args, cwd: modulePath
