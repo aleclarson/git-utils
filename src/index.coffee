@@ -108,6 +108,9 @@ define exports,
   resetFiles: lazy: ->
     require "./resetFiles"
 
+  revert: lazy: ->
+    require "./revert"
+
   setBranch: lazy: ->
     require "./setBranch"
 

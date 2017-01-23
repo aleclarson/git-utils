@@ -13,19 +13,12 @@ git =
   isStaged: require "./isStaged"
   pushBranch: require "./pushBranch"
   pushTags: require "./pushTags"
-  resetBranch: require "./resetBranch"
+  revert: require "./revert"
 
 optionTypes =
   force: Boolean.Maybe
   remote: String.Maybe
   message: String.Maybe
-
-revertCommit = (modulePath) ->
-  git.resetBranch modulePath, "HEAD^"
-  .fail (error) ->
-    if /^fatal: ambiguous argument/.test error.message
-      return git.resetBranch modulePath, null
-    throw error
 
 module.exports = (modulePath, version, options = {}) ->
 
@@ -54,7 +47,7 @@ module.exports = (modulePath, version, options = {}) ->
     unless options.force
       throw Error "Version already exists!"
 
-    revertCommit modulePath
+    git.revert modulePath
 
   .then ->
     message = version
@@ -93,6 +86,6 @@ module.exports = (modulePath, version, options = {}) ->
 
   # In case 'pushBranch' fails again, we need a separate 'onRejected' handler.
   .fail (error) ->
-    revertCommit modulePath
+    git.revertCommit modulePath
     .then -> git.deleteTag modulePath, version
     .always -> throw error
