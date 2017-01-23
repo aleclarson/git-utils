@@ -7,6 +7,7 @@ git = require "./core"
 
 optionTypes =
   keepIndex: Boolean.Maybe
+  includeUntracked: Boolean.Maybe
 
 module.exports =
 git.pushStash = (modulePath, options = {}) ->
@@ -16,6 +17,7 @@ git.pushStash = (modulePath, options = {}) ->
 
   args = []
   args.push "--keep-index" if options.keepIndex
+  args.push "--include-untracked" if options.includeUntracked
 
   exec.async "git stash", args, cwd: modulePath
 
