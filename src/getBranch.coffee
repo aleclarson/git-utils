@@ -2,7 +2,10 @@
 assertType = require "assertType"
 exec = require "exec"
 
-module.exports = (modulePath) ->
+git = require "./core"
+
+module.exports =
+git.getBranch = (modulePath) ->
 
   assertType modulePath, String
 

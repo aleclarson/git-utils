@@ -3,13 +3,15 @@ SortedArray = require "sorted-array"
 assertType = require "assertType"
 semver = require "node-semver"
 
-getTags = require "./getTags"
+require "./getTags"
+git = require "./core"
 
-module.exports = (modulePath) ->
+module.exports =
+git.getVersions = (modulePath) ->
 
   assertType modulePath, String
 
-  getTags modulePath
+  git.getTags modulePath
 
   .then (tagNames) ->
 

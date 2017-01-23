@@ -3,10 +3,13 @@ assertTypes = require "assertTypes"
 assertType = require "assertType"
 exec = require "exec"
 
+git = require "./core"
+
 optionTypes =
   force: Boolean.Maybe
 
-module.exports = (modulePath, tagName, options = {}) ->
+module.exports =
+git.addTag = (modulePath, tagName, options = {}) ->
 
   assertType modulePath, String
   assertType tagName, String

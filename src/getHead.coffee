@@ -4,15 +4,16 @@ assertType = require "assertType"
 Promise = require "Promise"
 exec = require "exec"
 
-git =
-  getBranch: require "./getBranch"
-  hasBranch: require "./hasBranch"
+require "./getBranch"
+require "./hasBranch"
+git = require "./core"
 
 optionTypes =
   remote: String.Maybe
   message: Boolean.Maybe
 
-module.exports = (modulePath, branchName, options = {}) ->
+module.exports =
+git.getHead = (modulePath, branchName, options = {}) ->
 
   assertType modulePath, String
   assertType branchName, String.Maybe

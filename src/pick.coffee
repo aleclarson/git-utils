@@ -6,12 +6,15 @@ exec = require "exec"
 
 MergeStrategy = require "./MergeStrategy"
 CommitRange = require "./CommitRange"
-isClean = require "./isClean"
+
+require "./isClean"
+git = require "./core"
 
 optionTypes =
   strategy: MergeStrategy.Maybe
 
-module.exports = (modulePath, commit, options = {}) ->
+module.exports =
+git.pick = (modulePath, commit, options = {}) ->
 
   assertType modulePath, String
   assertType commit, String.or CommitRange
@@ -27,7 +30,7 @@ module.exports = (modulePath, commit, options = {}) ->
 
   exec.async "git cherry-pick", args, cwd: modulePath
 
-  .then -> isClean modulePath
+  .then -> git.isClean modulePath
 
   # `cherry-pick` prints to stderr for merge conflicts
   .fail (error) ->

@@ -4,11 +4,14 @@ Finder = require "finder"
 exec = require "exec"
 os = require "os"
 
+git = require "./core"
+
 regex = /^([^\s]+)\s+([^\s]+)/g
 findName = Finder { regex, group: 1 }
 findUri = Finder { regex, group: 2 }
 
-module.exports = (modulePath) ->
+module.exports =
+git.getRemotes = (modulePath) ->
 
   assertType modulePath, String
 

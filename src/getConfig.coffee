@@ -3,7 +3,10 @@ assertType = require "assertType"
 exec = require "exec"
 log = require "log"
 
-module.exports = (keyPath) ->
+git = require "./core"
+
+module.exports =
+git.getConfig = (keyPath) ->
 
   assertType keyPath, String.Maybe
 

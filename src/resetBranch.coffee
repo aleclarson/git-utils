@@ -1,16 +1,20 @@
 
+# TODO: Test with `commit` being a non-existing commit.
+# TODO: Test with `commit` being a non-existing branch.
+
 assertTypes = require "assertTypes"
 assertType = require "assertType"
 isType = require "isType"
 Null = require "Null"
 exec = require "exec"
 
+git = require "./core"
+
 optionTypes =
   clean: Boolean.Maybe
 
-# TODO: Test with `commit` being a non-existing commit.
-# TODO: Test with `commit` being a non-existing branch.
-module.exports = (modulePath, commit, options) ->
+module.exports =
+git.resetBranch = (modulePath, commit, options) ->
 
   if isType commit, Object
     options = commit

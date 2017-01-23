@@ -3,10 +3,13 @@ assertTypes = require "assertTypes"
 assertType = require "assertType"
 exec = require "exec"
 
+git = require "./core"
+
 optionTypes =
   keepIndex: Boolean.Maybe
 
-module.exports = (modulePath, options = {}) ->
+module.exports =
+git.pushStash = (modulePath, options = {}) ->
 
   assertType modulePath, String
   assertTypes options, optionTypes

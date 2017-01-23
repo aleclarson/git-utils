@@ -5,17 +5,19 @@ Promise = require "Promise"
 exec = require "exec"
 
 MergeStrategy = require "./MergeStrategy"
-git =
-  isClean: require "./isClean"
-  getBranch: require "./getBranch"
-  setBranch: require "./setBranch"
+
+require "./isClean"
+require "./getBranch"
+require "./setBranch"
+git = require "./core"
 
 optionTypes =
   ours: String.Maybe
   theirs: String
   strategy: MergeStrategy.Maybe
 
-module.exports = (modulePath, options) ->
+module.exports =
+git.mergeBranch = (modulePath, options) ->
 
   assertType modulePath, String
   assertTypes options, optionTypes

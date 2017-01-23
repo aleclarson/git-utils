@@ -1,11 +1,11 @@
 
-resetBranch = require "./resetBranch"
+require "./resetBranch"
+git = require "./core"
 
-revertCommit = (modulePath) ->
-  resetBranch modulePath, "HEAD^"
+module.exports =
+git.revert = (modulePath) ->
+  git.resetBranch modulePath, "HEAD^"
   .fail (error) ->
     if /^fatal: ambiguous argument/.test error.message
-      return resetBranch modulePath, null
+      return git.resetBranch modulePath, null
     throw error
-
-module.exports = revertCommit

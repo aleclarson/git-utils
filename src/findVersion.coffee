@@ -3,14 +3,16 @@ assertType = require "assertType"
 Promise = require "Promise"
 semver = require "node-semver"
 
-getVersions = require "./getVersions"
+require "./getVersions"
+git = require "./core"
 
-module.exports = (modulePath, versionPattern) ->
+module.exports =
+git.findVersion = (modulePath, versionPattern) ->
 
   assertType modulePath, String
   assertType versionPattern, String
 
-  getVersions modulePath
+  git.getVersions modulePath
 
   .then (versions) ->
     version = semver.maxSatisfying versions, versionPattern

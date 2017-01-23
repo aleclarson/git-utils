@@ -1,9 +1,13 @@
 
+# TODO: Test with `oldName` not existing.
+
 assertType = require "assertType"
 exec = require "exec"
 
-# TODO: Test with `oldName` not existing.
-module.exports = (modulePath, oldName, newName) ->
+git = require "./core"
+
+module.exports =
+git.renameFile = (modulePath, oldName, newName) ->
 
   assertType modulePath, String
   assertType oldName, String

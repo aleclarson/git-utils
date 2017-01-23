@@ -1,14 +1,18 @@
 
+# TODO: Test against existing branch name.
+
 assertType = require "assertType"
 exec = require "exec"
 
-# TODO: Test against existing branch name.
-module.exports = (modulePath, branchName) ->
+git = require "./core"
+
+module.exports =
+git.addBranch = (modulePath, branchName) ->
 
   assertType modulePath, String
   assertType branchName, String
 
-  exec.async "git checkout -b " + branchName, { cwd: modulePath }
+  exec.async "git checkout -b " + branchName, {cwd: modulePath}
 
   .then -> branchName
 

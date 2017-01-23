@@ -4,10 +4,13 @@ assertType = require "assertType"
 exec = require "exec"
 os = require "os"
 
+git = require "./core"
+
 optionTypes =
   remote: String.Maybe
 
-module.exports = (modulePath, branchName, options = {}) ->
+module.exports =
+git.deleteBranch = (modulePath, branchName, options = {}) ->
 
   assertType modulePath, String
   assertType branchName, String

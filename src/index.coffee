@@ -1,121 +1,42 @@
 
-define = require "define"
+module.exports = require "./core"
 
-define exports,
-
-  addBranch: lazy: ->
-    require "./addBranch"
-
-  addTag: lazy: ->
-    require "./addTag"
-
-  assertRepo: lazy: ->
-    require "./assertRepo"
-
-  blame: lazy: ->
-    require "./blame"
-
-  commit: lazy: ->
-    require "./commit"
-
-  deleteBranch: lazy: ->
-    require "./deleteBranch"
-
-  deleteFile: lazy: ->
-    require "./deleteFile"
-
-  deleteTag: lazy: ->
-    require "./deleteTag"
-
-  diff: lazy: ->
-    require "./diff"
-
-  diffConflicts: lazy: ->
-    require "./diffConflicts"
-
-  findConflicts: lazy: ->
-    require "./findConflicts"
-
-  findVersion: lazy: ->
-    require "./findVersion"
-
-  getBranch: lazy: ->
-    require "./getBranch"
-
-  getBranches: lazy: ->
-    require "./getBranches"
-
-  getConfig: lazy: ->
-    require "./getConfig"
-
-  getHead: lazy: ->
-    require "./getHead"
-
-  getRemotes: lazy: ->
-    require "./getRemotes"
-
-  getStatus: lazy: ->
-    require "./getStatus"
-
-  getTags: lazy: ->
-    require "./getTags"
-
-  getVersions: lazy: ->
-    require "./getVersions"
-
-  hasBranch: lazy: ->
-    require "./hasBranch"
-
-  isClean: lazy: ->
-    require "./isClean"
-
-  isRepo: lazy: ->
-    require "./isRepo"
-
-  isStaged: lazy: ->
-    require "./isStaged"
-
-  mergeBranch: lazy: ->
-    require "./mergeBranch"
-
-  mergeFiles: lazy: ->
-    require "./mergeFiles"
-
-  pick: lazy: ->
-    require "./pick"
-
-  popStash: lazy: ->
-    require "./popStash"
-
-  pushBranch: lazy: ->
-    require "./pushBranch"
-
-  pushStash: lazy: ->
-    require "./pushStash"
-
-  pushTags: lazy: ->
-    require "./pushTags"
-
-  pushVersion: lazy: ->
-    require "./pushVersion"
-
-  renameFile: lazy: ->
-    require "./renameFile"
-
-  resetBranch: lazy: ->
-    require "./resetBranch"
-
-  resetFiles: lazy: ->
-    require "./resetFiles"
-
-  revert: lazy: ->
-    require "./revert"
-
-  setBranch: lazy: ->
-    require "./setBranch"
-
-  stageFiles: lazy: ->
-    require "./stageFiles"
-
-  unstageFiles: lazy: ->
-    require "./unstageFiles"
+require "./addBranch"
+require "./addTag"
+require "./assertRepo"
+require "./blame"
+require "./commit"
+require "./deleteBranch"
+require "./deleteFile"
+require "./deleteTag"
+require "./diff"
+require "./diffConflicts"
+require "./findConflicts"
+require "./findVersion"
+require "./getBranch"
+require "./getBranches"
+require "./getConfig"
+require "./getHead"
+require "./getRemotes"
+require "./getStatus"
+require "./getTags"
+require "./getVersions"
+require "./hasBranch"
+require "./isClean"
+require "./isRepo"
+require "./isStaged"
+require "./mergeBranch"
+require "./mergeFiles"
+require "./pick"
+require "./popStash"
+require "./pushBranch"
+require "./pushStash"
+require "./pushTags"
+require "./pushVersion"
+require "./renameFile"
+require "./resetBranch"
+require "./resetFiles"
+require "./revert"
+require "./setBranch"
+require "./stageFiles"
+require "./unstageFiles"

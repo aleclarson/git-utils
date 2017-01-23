@@ -5,11 +5,14 @@ path = require "path"
 exec = require "exec"
 sync = require "sync"
 
+git = require "./core"
+
 optionTypes =
   commit: String.Maybe
   dryRun: Boolean.Maybe
 
-module.exports = (modulePath, files, options = {}) ->
+module.exports =
+git.resetFiles = (modulePath, files, options = {}) ->
 
   assertType modulePath, String
   assertType files, String.or Array

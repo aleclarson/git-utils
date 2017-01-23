@@ -4,12 +4,12 @@ path = require "path"
 exec = require "exec"
 log = require "log"
 
-isRepo = require "./isRepo"
+git = require "./core"
 
 module.exports =
-assertRepo = (modulePath) ->
+git.assertRepo = (modulePath) ->
 
-  if isRepo modulePath
+  if git.isRepo modulePath
     return Promise()
 
   moduleName = path.resolve modulePath
@@ -18,14 +18,13 @@ assertRepo = (modulePath) ->
   log.white " is not a git repository!"
   log.moat 1
 
-  log.gray.dim "Want to call "
+  log.gray.dim "Should I call "
   log.yellow "git init"
-  log.gray.dim "?"
+  log.gray.dim "? "
 
-  shouldInit = prompt.sync { parseBool: yes }
+  shouldInit = prompt.sync {bool: yes}
   log.moat 1
 
-  if not shouldInit
-    return Promise()
-
-  exec.async "git init", cwd: modulePath
+  if shouldInit
+  then exec.async "git init", cwd: modulePath
+  else Promise()

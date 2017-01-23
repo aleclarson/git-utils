@@ -5,13 +5,15 @@ isType = require "isType"
 exec = require "exec"
 os = require "os"
 
-getBranch = require "./getBranch"
+require "./getBranch"
+git = require "./core"
 
 optionTypes =
   upstream: Boolean.Maybe
   force: Boolean.Maybe
 
-module.exports = (modulePath, remoteName, options = {}) ->
+module.exports =
+git.pushBranch = (modulePath, remoteName, options = {}) ->
 
   if isType remoteName, Object
     options = remoteName
@@ -24,7 +26,7 @@ module.exports = (modulePath, remoteName, options = {}) ->
 
   args = [ remoteName ]
 
-  getBranch modulePath
+  git.getBranch modulePath
 
   .then (currentBranch) ->
 

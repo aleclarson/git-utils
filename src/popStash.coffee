@@ -2,7 +2,10 @@
 assertType = require "assertType"
 exec = require "exec"
 
-module.exports = (modulePath) ->
+git = require "./core"
+
+module.exports =
+git.popStash = (modulePath) ->
 
   assertType modulePath, String
 

@@ -2,13 +2,15 @@
 assertType = require "assertType"
 hasKeys = require "hasKeys"
 
-getStatus = require "./getStatus"
+require "./getStatus"
+git = require "./core"
 
-module.exports = (modulePath) ->
+module.exports =
+git.isStaged = (modulePath) ->
 
   assertType modulePath, String
 
-  getStatus modulePath
+  git.getStatus modulePath
 
   .then (status) ->
     hasKeys status.staged

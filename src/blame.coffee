@@ -3,10 +3,13 @@ assertTypes = require "assertTypes"
 assertType = require "assertType"
 exec = require "exec"
 
+git = require "./core"
+
 optionTypes =
   lines: Array.Maybe
 
-module.exports = (modulePath, filePath, options = {}) ->
+module.exports =
+git.blame = (modulePath, filePath, options = {}) ->
 
   assertType modulePath, String, "modulePath"
   assertType filePath, String, "filePath"

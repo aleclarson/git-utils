@@ -1,14 +1,15 @@
 
 assertType = require "assertType"
 
-getStatus = require "./getStatus"
+require "./getStatus"
+git = require "./core"
 
-module.exports = (modulePath) ->
+module.exports =
+git.isClean = (modulePath) ->
 
   assertType modulePath, String
 
-  getStatus modulePath,
-    raw: yes
+  git.getStatus modulePath, {raw: yes}
 
   .then (status) ->
     status.length is 0

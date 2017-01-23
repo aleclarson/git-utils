@@ -10,19 +10,20 @@ log = require "log"
 fs = require "io/sync"
 
 MergeStrategy = require "./MergeStrategy"
-git =
-  addBranch: require "./addBranch"
-  commit: require "./commit"
-  deleteBranch: require "./deleteBranch"
-  deleteFile: require "./deleteFile"
-  getBranch: require "./getBranch"
-  isClean: require "./isClean"
-  pick: require "./pick"
-  mergeBranch: require "./mergeBranch"
-  renameFile: require "./renameFile"
-  resetBranch: require "./resetBranch"
-  setBranch: require "./setBranch"
-  stageFiles: require "./stageFiles"
+
+require "./addBranch"
+require "./commit"
+require "./deleteBranch"
+require "./deleteFile"
+require "./getBranch"
+require "./isClean"
+require "./pick"
+require "./mergeBranch"
+require "./renameFile"
+require "./resetBranch"
+require "./setBranch"
+require "./stageFiles"
+git = require "./core"
 
 optionTypes =
   ours: String.Maybe # Used to get an absolute path from each `MergedFile`. Defaults to `options.modulePath`.
@@ -33,7 +34,8 @@ optionTypes =
   strategy: MergeStrategy.Maybe # The default merging strategy for each changed file. Defaults to none.
   verbose: Boolean.Maybe # Should events be logged to stdout?
 
-module.exports = (modulePath, options) ->
+module.exports =
+git.mergeFiles = (modulePath, options) ->
 
   assertType modulePath, String
   assertTypes options, optionTypes

@@ -4,9 +4,11 @@
 fs = require "io/sync"
 os = require "os"
 
-findConflicts = require "./findConflicts"
+require "./findConflicts"
+git = require "./core"
 
-module.exports = (filePath, options = {}) ->
+module.exports =
+git.diffConflicts = (filePath, options = {}) ->
 
   code = fs.read filePath
 
@@ -15,7 +17,7 @@ module.exports = (filePath, options = {}) ->
 
   results = []
 
-  findConflicts { code }
+  git.findConflicts {code}
 
   .forEach ({ ours, theirs, range }) ->
 

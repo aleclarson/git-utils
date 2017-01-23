@@ -1,10 +1,14 @@
 
+# TODO: Test with `file` being a non-existing file.
+
 assertType = require "assertType"
 exec = require "exec"
 fs = require "io/sync"
 
-# TODO: Test with `file` being a non-existing file.
-module.exports = (modulePath, filePath) ->
+git = require "./core"
+
+module.exports =
+git.deleteFile = (modulePath, filePath) ->
 
   assertType modulePath, String
   assertType filePath, String

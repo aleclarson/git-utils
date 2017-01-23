@@ -5,22 +5,23 @@ semver = require "node-semver"
 exec = require "exec"
 os = require "os"
 
-git =
-  addTag: require "./addTag"
-  commit: require "./commit"
-  deleteTag: require "./deleteTag"
-  findVersion: require "./findVersion"
-  isStaged: require "./isStaged"
-  pushBranch: require "./pushBranch"
-  pushTags: require "./pushTags"
-  revert: require "./revert"
+require "./addTag"
+require "./commit"
+require "./deleteTag"
+require "./findVersion"
+require "./isStaged"
+require "./pushBranch"
+require "./pushTags"
+require "./revert"
+git = require "./core"
 
 optionTypes =
   force: Boolean.Maybe
   remote: String.Maybe
   message: String.Maybe
 
-module.exports = (modulePath, version, options = {}) ->
+module.exports =
+git.pushVersion = (modulePath, version, options = {}) ->
 
   assertType modulePath, String
   assertType version, String

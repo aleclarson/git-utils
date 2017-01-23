@@ -3,13 +3,15 @@ assertTypes = require "assertTypes"
 Finder = require "finder"
 fs = require "io/sync"
 
-mergeFiles = require "./mergeFiles"
+require "./mergeFiles"
+git = require "./core"
 
 optionTypes =
   code: String.Maybe
   filePath: String.Maybe
 
-module.exports = (options) ->
+module.exports =
+git.findConflicts = (options) ->
   assertTypes options, optionTypes
   options.code ?= fs.read options.filePath
   conflicts = []

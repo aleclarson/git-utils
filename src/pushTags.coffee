@@ -4,11 +4,14 @@ assertType = require "assertType"
 exec = require "exec"
 os = require "os"
 
+git = require "./core"
+
 optionTypes =
   force: Boolean.Maybe
   remote: String.Maybe
 
-module.exports = (modulePath, options = {}) ->
+module.exports =
+git.pushTags = (modulePath, options = {}) ->
 
   assertType modulePath, String
   assertTypes options, optionTypes

@@ -3,7 +3,10 @@ assertType = require "assertType"
 path = require "path"
 fs = require "io/sync"
 
-isRepo = (modulePath) ->
+git = require "./core"
+
+module.exports =
+git.isRepo = (modulePath) ->
 
   assertType modulePath, String
 
@@ -16,5 +19,3 @@ isRepo = (modulePath) ->
   modulePath = path.join modulePath, ".git"
 
   return fs.isDir modulePath
-
-module.exports = isRepo

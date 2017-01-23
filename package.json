@@ -17,7 +17,6 @@
     "Shape": "aleclarson/Shape#2.0.1",
     "assertType": "aleclarson/assertType#2.0.1",
     "assertTypes": "aleclarson/assertTypes#2.0.1",
-    "define": "aleclarson/define#1.0.1",
     "diff": "2.2.x",
     "escape-string-regexp": "aleclarson/escape-string-regexp#1.0.5",
     "exec": "aleclarson/exec#1.0.1",

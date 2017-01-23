@@ -6,12 +6,14 @@ isType = require "isType"
 exec = require "exec"
 os = require "os"
 
-getRemotes = require "./getRemotes"
+require "./getRemotes"
+git = require "./core"
 
 optionTypes =
   raw: Boolean.Maybe
 
-module.exports = (modulePath, remoteName, options = {}) ->
+module.exports =
+git.getBranches = (modulePath, remoteName, options = {}) ->
 
   if isType remoteName, Object
     options = remoteName
@@ -24,7 +26,7 @@ module.exports = (modulePath, remoteName, options = {}) ->
 
   if remoteName
 
-    return getRemotes modulePath
+    return git.getRemotes modulePath
 
     .then (remotes) ->
       remoteUri = remotes[remoteName].push

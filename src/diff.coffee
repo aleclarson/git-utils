@@ -1,14 +1,18 @@
 
-{ find } = require "finder"
+# TODO: Test against an empty diff.
+# TODO: Test with non-existent commits.
+# TODO: Test with branches.
+
+{find} = require "finder"
 
 assertType   = require "assertType"
 exec = require "exec"
 os = require "os"
 
-# TODO: Test against an empty diff.
-# TODO: Test with non-existent commits.
-# TODO: Test with branches.
-module.exports = (modulePath, firstCommit, lastCommit = "HEAD") ->
+git = require "./core"
+
+module.exports =
+git.diff = (modulePath, firstCommit, lastCommit = "HEAD") ->
 
   assertType modulePath, String
   assertType firstCommit, String

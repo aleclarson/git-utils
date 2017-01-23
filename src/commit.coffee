@@ -6,14 +6,16 @@ Promise = require "Promise"
 exec = require "exec"
 os = require "os"
 
-isStaged = require "./isStaged"
+require "./isStaged"
+git = require "./core"
 
-module.exports = (modulePath, message) ->
+module.exports =
+git.commit = (modulePath, message) ->
 
   assertType modulePath, String
   assertType message, String
 
-  isStaged modulePath
+  git.isStaged modulePath
   .assert "No changes were staged!"
 
   .then ->

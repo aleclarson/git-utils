@@ -3,18 +3,20 @@ assertTypes = require "assertTypes"
 assertType = require "assertType"
 inArray = require "in-array"
 
-getBranches = require "./getBranches"
+require "./getBranches"
+git = require "./core"
 
 optionTypes =
   remote: String.Maybe
 
-module.exports = (modulePath, branchName, options = {}) ->
+module.exports =
+git.hasBranch = (modulePath, branchName, options = {}) ->
 
   assertType modulePath, String
   assertType branchName, String
   assertTypes options, optionTypes
 
-  getBranches modulePath, options.remote
+  git.getBranches modulePath, options.remote
 
   .then (branchNames) ->
     inArray branchNames, branchName

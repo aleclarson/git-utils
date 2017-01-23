@@ -6,11 +6,14 @@ Finder = require "finder"
 isType = require "isType"
 exec = require "exec"
 
+git = require "./core"
+
 optionTypes =
   raw: Boolean.Maybe
   remote: Boolean.Maybe
 
-module.exports = (modulePath, options = {}) ->
+module.exports =
+git.getStatus = (modulePath, options = {}) ->
   assertType modulePath, String
   assertTypes options, optionTypes
   if options.remote
