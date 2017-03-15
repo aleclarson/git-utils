@@ -13,7 +13,7 @@
     "Maybe": "aleclarson/Maybe#1.0.2",
     "Null": "aleclarson/Null#1.0.1",
     "OneOf": "aleclarson/OneOf#1.0.1",
-    "Promise": "aleclarson/Promise#2.1.1",
+    "Promise": "aleclarson/Promise#2.2.1",
     "Shape": "aleclarson/Shape#2.0.1",
     "assertType": "aleclarson/assertType#2.0.1",
     "assertTypes": "aleclarson/assertTypes#2.0.1",

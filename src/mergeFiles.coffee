@@ -52,7 +52,7 @@ git.mergeFiles = (modulePath, options) ->
   mergedCount = Object.keys(mergedPaths).length
 
   if not (renamedCount + unlinkedCount + mergedCount)
-    return Promise()
+    return Promise.resolve()
 
   state =
     startBranch: null

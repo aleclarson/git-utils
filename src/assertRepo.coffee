@@ -10,7 +10,7 @@ module.exports =
 git.assertRepo = (modulePath) ->
 
   if git.isRepo modulePath
-    return Promise()
+    return Promise.resolve()
 
   moduleName = path.resolve modulePath
   log.moat 1
@@ -27,4 +27,4 @@ git.assertRepo = (modulePath) ->
 
   if shouldInit
   then exec.async "git init", cwd: modulePath
-  else Promise()
+  else Promise.resolve()
