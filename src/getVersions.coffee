@@ -1,5 +1,5 @@
 
-SortedArray = require "sorted-array"
+SortedArray = require "SortedArray"
 assertType = require "assertType"
 semver = require "node-semver"
 

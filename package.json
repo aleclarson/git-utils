@@ -15,6 +15,7 @@
     "OneOf": "aleclarson/OneOf#1.0.1",
     "Promise": "aleclarson/Promise#2.2.1",
     "Shape": "aleclarson/Shape#2.0.1",
+    "SortedArray": "aleclarson/SortedArray#2.1.0",
     "assertType": "aleclarson/assertType#2.0.1",
     "assertTypes": "aleclarson/assertTypes#2.0.1",
     "diff": "2.2.x",
@@ -28,7 +29,6 @@
     "log": "aleclarson/log#2.1.0",
     "node-semver": "aleclarson/node-semver#5.1.0",
     "random": "aleclarson/random#1.0.4",
-    "sorted-array": "aleclarson/sorted-array#2.0.1",
     "sync": "aleclarson/sync#1.0.1"
   },
   "implicitDependencies": [
