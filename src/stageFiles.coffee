@@ -11,7 +11,7 @@ git.stageFiles = (modulePath, files) ->
   assertValid files, "string|array"
 
   if isValid files, "string"
-    files = [ files ]
+    files = [files]
 
   exec.async "git add", files, cwd: modulePath
 

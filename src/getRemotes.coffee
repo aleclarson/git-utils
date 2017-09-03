@@ -15,7 +15,6 @@ git.getRemotes = (modulePath) ->
   assertValid modulePath, "string"
 
   exec.async "git remote --verbose", cwd: modulePath
-
   .then (stdout) ->
 
     remotes = Object.create null

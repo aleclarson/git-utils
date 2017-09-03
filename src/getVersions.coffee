@@ -11,7 +11,6 @@ git.getVersions = (modulePath) ->
   assertValid modulePath, "string"
 
   git.getTags modulePath
-
   .then (tagNames) ->
 
     versions = SortedArray [], semver.compare

@@ -18,7 +18,7 @@ git.resetFiles = (modulePath, files, options = {}) ->
   assertValid options, optionTypes
 
   if isValid files, "string"
-    files = [ files ]
+    files = [files]
 
   else if not files.length
     return

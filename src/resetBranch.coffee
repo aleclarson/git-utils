@@ -16,8 +16,7 @@ git.resetBranch = (modulePath, commit, options) ->
   if isValid commit, "object"
     options = commit
     commit = "HEAD"
-  else
-    options ?= {}
+  else options ?= {}
 
   assertValid modulePath, "string"
   assertValid commit, "string|null"

@@ -15,6 +15,5 @@ git.hasBranch = (modulePath, branchName, options = {}) ->
   assertValid options, optionTypes
 
   git.getBranches modulePath, options.remote
-
   .then (branchNames) ->
     inArray branchNames, branchName

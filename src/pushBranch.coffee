@@ -23,10 +23,9 @@ git.pushBranch = (modulePath, remoteName, options = {}) ->
   assertValid remoteName, "string"
   assertValid options, optionTypes
 
-  args = [ remoteName ]
+  args = [remoteName]
 
   git.getBranch modulePath
-
   .then (currentBranch) ->
 
     if currentBranch is null

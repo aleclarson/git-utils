@@ -1,5 +1,5 @@
 
-{ find } = require "finder"
+{find} = require "finder"
 
 assertValid = require "assertValid"
 Promise = require "Promise"

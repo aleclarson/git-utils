@@ -17,9 +17,7 @@ git.deleteBranch = (modulePath, branchName, options = {}) ->
   exec.async "git branch -D #{branchName}", cwd: modulePath
 
   .then ->
-
     return if not options.remote
-
     exec.async "git push #{options.remote} --delete #{branchName}", cwd: modulePath
 
   .fail (error) ->

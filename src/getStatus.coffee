@@ -19,9 +19,7 @@ git.getStatus = (modulePath, options = {}) ->
   else getLocalStatus modulePath, options
 
 getRemoteStatus = (modulePath) ->
-
   exec.async "git status --short --branch", cwd: modulePath
-
   .then (stdout) ->
     stdout = stdout.split("\n")[0]
 
@@ -34,9 +32,7 @@ getRemoteStatus = (modulePath) ->
     behind: Number findBehind stdout
 
 getLocalStatus = (modulePath, options) ->
-
   exec.async "git status --porcelain", cwd: modulePath
-
   .then (stdout) ->
 
     if options.raw

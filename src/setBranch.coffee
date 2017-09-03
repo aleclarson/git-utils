@@ -18,7 +18,6 @@ git.setBranch = (modulePath, branchName, options = {}) ->
   assertValid options, optionTypes
 
   git.getBranch modulePath
-
   .then (currentBranch) ->
 
     if currentBranch is branchName

@@ -11,6 +11,6 @@ git.unstageFiles = (modulePath, files) ->
   assertValid files, "string|array"
 
   if isValid files, "string"
-    files = [ files ]
+    files = [files]
 
   exec.async "git reset --", files, cwd: modulePath

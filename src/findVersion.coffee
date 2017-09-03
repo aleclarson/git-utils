@@ -12,7 +12,6 @@ git.findVersion = (modulePath, versionPattern) ->
   assertValid versionPattern, "string"
 
   git.getVersions modulePath
-
   .then (versions) ->
     version = semver.maxSatisfying versions, versionPattern
     Promise.resolve version, versions
