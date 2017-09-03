@@ -1,19 +1,17 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 
 git = require "./core"
 
 optionTypes =
-  lines: Array.Maybe
+  lines: "array?"
 
 module.exports =
 git.blame = (modulePath, filePath, options = {}) ->
-
-  assertType modulePath, String, "modulePath"
-  assertType filePath, String, "filePath"
-  assertTypes options, optionTypes, "options"
+  assertValid modulePath, "string"
+  assertValid filePath, "string"
+  assertValid options, optionTypes
 
   args = [ "--porcelain" ]
 

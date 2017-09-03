@@ -1,6 +1,5 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 Promise = require "Promise"
 exec = require "exec"
 
@@ -10,14 +9,13 @@ require "./isClean"
 git = require "./core"
 
 optionTypes =
-  force: Boolean.Maybe
+  force: "boolean?"
 
 module.exports =
 git.setBranch = (modulePath, branchName, options = {}) ->
-
-  assertType modulePath, String
-  assertType branchName, String
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid branchName, "string"
+  assertValid options, optionTypes
 
   git.getBranch modulePath
 

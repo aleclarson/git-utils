@@ -1,19 +1,17 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 
 git = require "./core"
 
 optionTypes =
-  keepIndex: Boolean.Maybe
-  includeUntracked: Boolean.Maybe
+  keepIndex: "boolean?"
+  includeUntracked: "boolean?"
 
 module.exports =
 git.pushStash = (modulePath, options = {}) ->
-
-  assertType modulePath, String
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid options, optionTypes
 
   args = []
   args.push "--keep-index" if options.keepIndex

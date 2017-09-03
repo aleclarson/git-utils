@@ -1,5 +1,5 @@
 
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 log = require "log"
 
@@ -7,8 +7,7 @@ git = require "./core"
 
 module.exports =
 git.getConfig = (keyPath) ->
-
-  assertType keyPath, String.Maybe
+  assertValid keyPath, "string?"
 
   args =
     if keyPath

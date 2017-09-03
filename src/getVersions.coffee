@@ -1,6 +1,6 @@
 
 SortedArray = require "SortedArray"
-assertType = require "assertType"
+assertValid = require "assertValid"
 semver = require "node-semver"
 
 require "./getTags"
@@ -8,8 +8,7 @@ git = require "./core"
 
 module.exports =
 git.getVersions = (modulePath) ->
-
-  assertType modulePath, String
+  assertValid modulePath, "string"
 
   git.getTags modulePath
 

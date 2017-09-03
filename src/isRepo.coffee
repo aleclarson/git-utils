@@ -1,5 +1,5 @@
 
-assertType = require "assertType"
+assertValid = require "assertValid"
 path = require "path"
 fs = require "io/sync"
 
@@ -7,8 +7,7 @@ git = require "./core"
 
 module.exports =
 git.isRepo = (modulePath) ->
-
-  assertType modulePath, String
+  assertValid modulePath, "string"
 
   if modulePath[0] is "."
     modulePath = path.resolve process.cwd(), modulePath

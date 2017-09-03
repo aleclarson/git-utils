@@ -1,7 +1,6 @@
-
 # TODO: Test with `file` being a non-existing file.
 
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 fs = require "io/sync"
 
@@ -9,9 +8,8 @@ git = require "./core"
 
 module.exports =
 git.deleteFile = (modulePath, filePath) ->
-
-  assertType modulePath, String
-  assertType filePath, String
+  assertValid modulePath, "string"
+  assertValid filePath, "string"
 
   if fs.isDir filePath
     args = [ "-r", filePath ]

@@ -1,6 +1,5 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 Promise = require "Promise"
 exec = require "exec"
 
@@ -12,15 +11,14 @@ require "./setBranch"
 git = require "./core"
 
 optionTypes =
-  ours: String.Maybe
-  theirs: String
-  strategy: MergeStrategy.Maybe
+  ours: "string?"
+  theirs: "string"
+  strategy: [MergeStrategy, "?"]
 
 module.exports =
 git.mergeBranch = (modulePath, options) ->
-
-  assertType modulePath, String
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid options, optionTypes
 
   startBranch = null
 

@@ -1,12 +1,10 @@
 
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 
 git = require "./core"
 
 module.exports =
 git.popStash = (modulePath) ->
-
-  assertType modulePath, String
-
+  assertValid modulePath, "string"
   exec.async "git stash pop", cwd: modulePath

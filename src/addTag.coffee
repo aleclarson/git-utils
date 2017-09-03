@@ -1,19 +1,17 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 
 git = require "./core"
 
 optionTypes =
-  force: Boolean.Maybe
+  force: "boolean?"
 
 module.exports =
 git.addTag = (modulePath, tagName, options = {}) ->
-
-  assertType modulePath, String
-  assertType tagName, String
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid tagName, "string"
+  assertValid options, optionTypes
 
   args = [ tagName ]
   args.unshift "-f" if options.force

@@ -1,5 +1,5 @@
 
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 os = require "os"
 

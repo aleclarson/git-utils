@@ -1,5 +1,5 @@
 
-assertType = require "assertType"
+assertValid = require "assertValid"
 Finder = require "finder"
 exec = require "exec"
 os = require "os"
@@ -12,8 +12,7 @@ findUri = Finder { regex, group: 2 }
 
 module.exports =
 git.getRemotes = (modulePath) ->
-
-  assertType modulePath, String
+  assertValid modulePath, "string"
 
   exec.async "git remote --verbose", cwd: modulePath
 

@@ -1,9 +1,7 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 Promise = require "Promise"
 Random = require "random"
-isType = require "isType"
 path = require "path"
 sync = require "sync"
 log = require "log"
@@ -26,19 +24,18 @@ require "./stageFiles"
 git = require "./core"
 
 optionTypes =
-  ours: String.Maybe # Used to get an absolute path from each `MergedFile`. Defaults to `options.modulePath`.
-  theirs: String # Used to get a relative path for each `MergedFile`.
-  rename: Object # Which files (or directories) should be renamed?
-  unlink: Array # Which files (or directories) should be deleted?
-  merge: Object # Which files (or directories) should be merged in?
-  strategy: MergeStrategy.Maybe # The default merging strategy for each changed file. Defaults to none.
-  verbose: Boolean.Maybe # Should events be logged to stdout?
+  ours: "string?" # Used to get an absolute path from each `MergedFile`. Defaults to `options.modulePath`.
+  theirs: "string" # Used to get a relative path for each `MergedFile`.
+  rename: "object" # Which files (or directories) should be renamed?
+  unlink: "array" # Which files (or directories) should be deleted?
+  merge: "object" # Which files (or directories) should be merged in?
+  strategy: [MergeStrategy, "?"] # The default merging strategy for each changed file. Defaults to none.
+  verbose: "boolean?" # Should events be logged to stdout?
 
 module.exports =
-git.mergeFiles = (modulePath, options) ->
-
-  assertType modulePath, String
-  assertTypes options, optionTypes
+git.mergeFiles = (modulePath, options = {}) ->
+  assertValid modulePath, "string"
+  assertValid options, optionTypes
 
   options.ours ?= modulePath
 
@@ -82,7 +79,7 @@ git.mergeFiles = (modulePath, options) ->
   # Perform renames and unlinks.
   .then ->
     Promise.chain renamedPaths, (newPath, oldPath) ->
-      assertType newPath, String
+      assertValid newPath, "string"
       newFile = path.resolve options.ours, newPath
       if fs.exists newFile
         throw Error "Cannot rename because another file is already named: '#{newFile}'"
@@ -99,7 +96,7 @@ git.mergeFiles = (modulePath, options) ->
 
     .then ->
       Promise.chain unlinkedPaths, (filePath) ->
-        assertType filePath, String
+        assertValid filePath, "string"
         ourFile = path.resolve options.ours, filePath
         unless fs.exists ourFile
           throw Error "Cannot unlink a file that does not exist: '#{ourFile}'"

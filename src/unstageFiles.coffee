@@ -1,16 +1,16 @@
 
-assertType = require "assertType"
+assertValid = require "assertValid"
+isValid = require "isValid"
 exec = require "exec"
 
 git = require "./core"
 
 module.exports =
 git.unstageFiles = (modulePath, files) ->
+  assertValid modulePath, "string"
+  assertValid files, "string|array"
 
-  assertType modulePath, String
-  assertType files, String.or Array
-
-  if not Array.isArray files
+  if isValid files, "string"
     files = [ files ]
 
   exec.async "git reset --", files, cwd: modulePath

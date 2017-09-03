@@ -1,17 +1,15 @@
-
 # TODO: Test with `oldName` not existing.
 
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 
 git = require "./core"
 
 module.exports =
 git.renameFile = (modulePath, oldName, newName) ->
-
-  assertType modulePath, String
-  assertType oldName, String
-  assertType newName, String
+  assertValid modulePath, "string"
+  assertValid oldName, "string"
+  assertValid newName, "string"
 
   rootLength = modulePath.length
 

@@ -1,6 +1,5 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 semver = require "node-semver"
 exec = require "exec"
 os = require "os"
@@ -16,16 +15,15 @@ require "./revert"
 git = require "./core"
 
 optionTypes =
-  force: Boolean.Maybe
-  remote: String.Maybe
-  message: String.Maybe
+  force: "boolean?"
+  remote: "string?"
+  message: "string?"
 
 module.exports =
 git.pushVersion = (modulePath, version, options = {}) ->
-
-  assertType modulePath, String
-  assertType version, String
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid version, "string"
+  assertValid options, optionTypes
 
   unless semver.valid version
     throw Error "Invalid version formatting!"

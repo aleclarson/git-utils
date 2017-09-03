@@ -1,20 +1,18 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 inArray = require "in-array"
 
 require "./getBranches"
 git = require "./core"
 
 optionTypes =
-  remote: String.Maybe
+  remote: "string?"
 
 module.exports =
 git.hasBranch = (modulePath, branchName, options = {}) ->
-
-  assertType modulePath, String
-  assertType branchName, String
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid branchName, "string"
+  assertValid options, optionTypes
 
   git.getBranches modulePath, options.remote
 

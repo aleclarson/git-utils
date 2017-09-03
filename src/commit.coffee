@@ -1,7 +1,7 @@
 
 { find } = require "finder"
 
-assertType = require "assertType"
+assertValid = require "assertValid"
 Promise = require "Promise"
 exec = require "exec"
 os = require "os"
@@ -11,9 +11,8 @@ git = require "./core"
 
 module.exports =
 git.commit = (modulePath, message) ->
-
-  assertType modulePath, String
-  assertType message, String
+  assertValid modulePath, "string"
+  assertValid message, "string"
 
   git.isStaged modulePath
   .assert "No changes were staged!"

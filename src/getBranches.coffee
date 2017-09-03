@@ -1,8 +1,7 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
+isValid = require "isValid"
 Finder = require "finder"
-isType = require "isType"
 exec = require "exec"
 os = require "os"
 
@@ -10,19 +9,19 @@ require "./getRemotes"
 git = require "./core"
 
 optionTypes =
-  raw: Boolean.Maybe
+  raw: "boolean?"
 
 module.exports =
-git.getBranches = (modulePath, remoteName, options = {}) ->
+git.getBranches = (modulePath, remoteName, options) ->
 
-  if isType remoteName, Object
+  if isValid remoteName, "object"
     options = remoteName
     remoteName = null
   else options ?= {}
 
-  assertType modulePath, String
-  assertType remoteName, String.Maybe
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid remoteName, "string|null"
+  assertValid options, optionTypes
 
   if remoteName
 

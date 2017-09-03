@@ -1,6 +1,6 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
+isValid = require "isValid"
 path = require "path"
 exec = require "exec"
 sync = require "sync"
@@ -8,17 +8,16 @@ sync = require "sync"
 git = require "./core"
 
 optionTypes =
-  commit: String.Maybe
-  dryRun: Boolean.Maybe
+  commit: "string?"
+  dryRun: "boolean?"
 
 module.exports =
 git.resetFiles = (modulePath, files, options = {}) ->
+  assertValid modulePath, "string"
+  assertValid files, "string|array"
+  assertValid options, optionTypes
 
-  assertType modulePath, String
-  assertType files, String.or Array
-  assertTypes options, optionTypes
-
-  if not Array.isArray files
+  if isValid files, "string"
     files = [ files ]
 
   else if not files.length

@@ -1,14 +1,12 @@
 
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 
 git = require "./core"
 
 module.exports =
 git.getBranch = (modulePath) ->
-
-  assertType modulePath, String
-
+  assertValid modulePath, "string"
   exec.async "git rev-parse --abbrev-ref HEAD", cwd: modulePath
 
   .fail (error) ->

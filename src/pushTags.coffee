@@ -1,20 +1,18 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 os = require "os"
 
 git = require "./core"
 
 optionTypes =
-  force: Boolean.Maybe
-  remote: String.Maybe
+  force: "boolean?"
+  remote: "string?"
 
 module.exports =
 git.pushTags = (modulePath, options = {}) ->
-
-  assertType modulePath, String
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid options, optionTypes
 
   args = [
     options.remote or "origin"

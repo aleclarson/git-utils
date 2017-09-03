@@ -1,27 +1,24 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
-isType = require "isType"
+assertValid = require "assertValid"
+isValid = require "isValid"
 exec = require "exec"
 
 MergeStrategy = require "./MergeStrategy"
-CommitRange = require "./CommitRange"
 
 require "./isClean"
 git = require "./core"
 
 optionTypes =
-  strategy: MergeStrategy.Maybe
+  strategy: [MergeStrategy, "?"]
 
 module.exports =
 git.pick = (modulePath, commit, options = {}) ->
-
-  assertType modulePath, String
-  assertType commit, String.or CommitRange
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid commit, {from: "string", to: "string"}
+  assertValid options, optionTypes
 
   args =
-    if isType commit, Object
+    if isValid commit, "object"
     then [ commit.from + ".." + commit.to ]
     else [ commit ]
 

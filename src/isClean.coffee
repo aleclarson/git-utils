@@ -1,14 +1,12 @@
 
-assertType = require "assertType"
+assertValid = require "assertValid"
 
 require "./getStatus"
 git = require "./core"
 
 module.exports =
 git.isClean = (modulePath) ->
-
-  assertType modulePath, String
-
+  assertValid modulePath, "string"
   git.getStatus modulePath, {raw: yes}
 
   .then (status) ->

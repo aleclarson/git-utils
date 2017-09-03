@@ -1,11 +1,10 @@
-
 # TODO: Test against an empty diff.
 # TODO: Test with non-existent commits.
 # TODO: Test with branches.
 
 {find} = require "finder"
 
-assertType   = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 os = require "os"
 
@@ -13,10 +12,9 @@ git = require "./core"
 
 module.exports =
 git.diff = (modulePath, firstCommit, lastCommit = "HEAD") ->
-
-  assertType modulePath, String
-  assertType firstCommit, String
-  assertType lastCommit, String
+  assertValid modulePath, "string"
+  assertValid firstCommit, "string"
+  assertValid lastCommit, "string"
 
   exec.async "git diff --raw #{firstCommit}..#{lastCommit}",  cwd: modulePath
 

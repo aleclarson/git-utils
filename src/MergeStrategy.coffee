@@ -1,7 +1,8 @@
 
-Maybe = require "Maybe"
-OneOf = require "OneOf"
+inArray = require "in-array"
+valido = require "valido"
 
-MergeStrategy = OneOf "MergeStrategy", [ "ours", "theirs" ]
-
-module.exports = MergeStrategy
+values = ["ours", "theirs"]
+module.exports = valido
+  test: (value) -> inArray values, value
+  error: -> Error "Invalid merge strategy"

@@ -1,20 +1,18 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 os = require "os"
 
 git = require "./core"
 
 optionTypes =
-  remote: String.Maybe
+  remote: "string?"
 
 module.exports =
 git.deleteBranch = (modulePath, branchName, options = {}) ->
-
-  assertType modulePath, String
-  assertType branchName, String
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid branchName, "string"
+  assertValid options, optionTypes
 
   exec.async "git branch -D #{branchName}", cwd: modulePath
 

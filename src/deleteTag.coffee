@@ -1,19 +1,17 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 
 git = require "./core"
 
 optionTypes =
-  remote: String.Maybe
+  remote: "string?"
 
 module.exports =
 git.deleteTag = (modulePath, tagName, options = {}) ->
-
-  assertType modulePath, String
-  assertType tagName, String
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid tagName, "string"
+  assertValid options, optionTypes
 
   exec.async "git tag -d #{tagName}", cwd: modulePath
 

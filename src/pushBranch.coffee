@@ -1,7 +1,6 @@
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
-isType = require "isType"
+assertValid = require "assertValid"
+isValid = require "isValid"
 exec = require "exec"
 os = require "os"
 
@@ -9,20 +8,20 @@ require "./getBranch"
 git = require "./core"
 
 optionTypes =
-  upstream: Boolean.Maybe
-  force: Boolean.Maybe
+  upstream: "boolean?"
+  force: "boolean?"
 
 module.exports =
 git.pushBranch = (modulePath, remoteName, options = {}) ->
 
-  if isType remoteName, Object
+  if isValid remoteName, "object"
     options = remoteName
     remoteName = "origin"
   else remoteName ?= "origin"
 
-  assertType modulePath, String
-  assertType remoteName, String
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid remoteName, "string"
+  assertValid options, optionTypes
 
   args = [ remoteName ]
 

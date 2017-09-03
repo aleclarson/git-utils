@@ -1,21 +1,19 @@
 
 escapeStringRegExp = require "escape-string-regexp"
-assertTypes = require "assertTypes"
-assertType = require "assertType"
+assertValid = require "assertValid"
 Finder = require "finder"
-isType = require "isType"
 exec = require "exec"
 
 git = require "./core"
 
 optionTypes =
-  raw: Boolean.Maybe
-  remote: Boolean.Maybe
+  raw: "boolean?"
+  remote: "boolean?"
 
 module.exports =
 git.getStatus = (modulePath, options = {}) ->
-  assertType modulePath, String
-  assertTypes options, optionTypes
+  assertValid modulePath, String
+  assertValid options, optionTypes
   if options.remote
   then getRemoteStatus modulePath
   else getLocalStatus modulePath, options

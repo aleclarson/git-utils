@@ -1,21 +1,17 @@
-
 # TODO: Test against existing branch name.
 
-assertType = require "assertType"
+assertValid = require "assertValid"
 exec = require "exec"
 
 git = require "./core"
 
 module.exports =
 git.addBranch = (modulePath, branchName) ->
-
-  assertType modulePath, String
-  assertType branchName, String
+  assertValid modulePath, "string"
+  assertValid branchName, "string"
 
   exec.async "git checkout -b " + branchName, {cwd: modulePath}
-
   .then -> branchName
-
   .fail (error) ->
 
     if /Switched to a new branch/.test error.message

@@ -1,30 +1,27 @@
-
 # TODO: Test with `commit` being a non-existing commit.
 # TODO: Test with `commit` being a non-existing branch.
 
-assertTypes = require "assertTypes"
-assertType = require "assertType"
-isType = require "isType"
-Null = require "Null"
+assertValid = require "assertValid"
+isValid = require "isValid"
 exec = require "exec"
 
 git = require "./core"
 
 optionTypes =
-  clean: Boolean.Maybe
+  clean: "boolean?"
 
 module.exports =
 git.resetBranch = (modulePath, commit, options) ->
 
-  if isType commit, Object
+  if isValid commit, "object"
     options = commit
     commit = "HEAD"
   else
     options ?= {}
 
-  assertType modulePath, String
-  assertType commit, String.or Null
-  assertTypes options, optionTypes
+  assertValid modulePath, "string"
+  assertValid commit, "string|null"
+  assertValid options, optionTypes
 
   if commit is null
     exec.async "git update-ref -d HEAD", {cwd: modulePath}
