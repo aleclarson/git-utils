@@ -14,10 +14,11 @@ optionTypes =
 module.exports =
 git.getBranches = (modulePath, remoteName, options) ->
 
-  if isValid remoteName, "object"
-    options = remoteName
+  if isValid remoteName, "string"
+    options ?= {}
+  else
+    options = remoteName or {}
     remoteName = null
-  else options ?= {}
 
   assertValid modulePath, "string"
   assertValid remoteName, "string|null"
