@@ -8,10 +8,11 @@ require "./getBranch"
 git = require "./core"
 
 optionTypes =
+  force: "boolean?"
   remote: "string?"
   branch: "string?"
   upstream: "boolean?"
-  force: "boolean?"
+  listener: "function?"
 
 module.exports =
 git.pushBranch = (modulePath, options = {}) ->
@@ -32,7 +33,9 @@ git.pushBranch = (modulePath, options = {}) ->
     then args.push branch + ":" + options.branch
     else args.push branch
 
-    exec.async "git push", args, cwd: modulePath
+    exec.async "git push", args,
+      cwd: modulePath
+      listener: options.listener
 
     .fail (error) ->
 
