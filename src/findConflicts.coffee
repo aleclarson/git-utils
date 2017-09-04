@@ -1,7 +1,7 @@
 
 assertValid = require "assertValid"
 Finder = require "finder"
-fs = require "io/sync"
+fs = require "fsx"
 
 require "./mergeFiles"
 git = require "./core"
@@ -13,7 +13,7 @@ optionTypes =
 module.exports =
 git.findConflicts = (options) ->
   assertValid options, optionTypes
-  options.code ?= fs.read options.filePath
+  options.code ?= fs.readFile options.filePath
   conflicts = []
   offset = 0
   loop

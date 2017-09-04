@@ -1,7 +1,7 @@
 
 { diffLines } = require "diff"
 
-fs = require "io/sync"
+fs = require "fsx"
 os = require "os"
 
 require "./findConflicts"
@@ -10,7 +10,7 @@ git = require "./core"
 module.exports =
 git.diffConflicts = (filePath, options = {}) ->
 
-  code = fs.read filePath
+  code = fs.readFile filePath
 
   # The end offset of the previous conflict.
   offset = 0
@@ -70,7 +70,7 @@ git.diffConflicts = (filePath, options = {}) ->
     results.push after
 
   if options.overwrite isnt no
-    fs.write filePath, results.join ""
+    fs.writeFile filePath, results.join ""
 
   return results
 

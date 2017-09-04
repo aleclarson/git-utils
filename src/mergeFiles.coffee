@@ -5,7 +5,7 @@ Random = require "random"
 path = require "path"
 sync = require "sync"
 log = require "log"
-fs = require "io/sync"
+fs = require "fsx"
 
 MergeStrategy = require "./MergeStrategy"
 
@@ -122,17 +122,17 @@ git.mergeFiles = (modulePath, options = {}) ->
       if fs.isFile ourFile
         unless fs.isFile theirFile
           throw Error "Expected a file: '#{theirFile}'"
-        return fs.write ourFile, ""
+        return fs.writeFile ourFile, ""
 
       unless fs.isDir theirFile
         throw Error "Expected a directory: '#{theirFile}'"
-      for theirChild in fs.match path.join theirFile, "**/*"
+      for theirChild in crawl theirFile, []
         continue if fs.isDir theirChild
         ourChild = path.resolve ourFile, path.relative theirFile, theirChild
         continue if not fs.exists ourChild
         if fs.isDir ourChild
           throw Error "Cannot use file to overwrite directory: '#{ourChild}'"
-        fs.write ourChild, ""
+        fs.writeFile ourChild, ""
       return
 
     git.stageFiles modulePath, "*"
@@ -159,9 +159,7 @@ git.mergeFiles = (modulePath, options = {}) ->
         log.white ourFile
         log.moat 1
 
-      fs.copy theirFile, ourFile,
-        recursive: yes
-        force: yes
+      fs.copy theirFile, ourFile
 
     git.stageFiles modulePath, "*"
     .then -> git.commit modulePath, "merge commit"
@@ -185,3 +183,16 @@ git.mergeFiles = (modulePath, options = {}) ->
   # Always delete the temporary branch.
   .always ->
     git.deleteBranch modulePath, state.tmpBranch
+
+#
+# Helpers
+#
+
+# `dir` must be an absolute path.
+crawl = (dir, files) ->
+  fs.readDir(dir).forEach (file) ->
+    file = path.join dir, file
+    if fs.isDir file
+    then files.push file
+    else crawl file, files
+  return files

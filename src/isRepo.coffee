@@ -1,7 +1,7 @@
 
 assertValid = require "assertValid"
 path = require "path"
-fs = require "io/sync"
+fs = require "fsx"
 
 git = require "./core"
 
