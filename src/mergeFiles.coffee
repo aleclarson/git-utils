@@ -12,11 +12,11 @@ MergeStrategy = require "./MergeStrategy"
 require "./addBranch"
 require "./commit"
 require "./deleteBranch"
-require "./deleteFile"
 require "./getBranch"
 require "./isClean"
 require "./pick"
 require "./mergeBranch"
+require "./remove"
 require "./renameFile"
 require "./resetBranch"
 require "./setBranch"
@@ -105,7 +105,7 @@ git.mergeFiles = (modulePath, options = {}) ->
           log.red "unlink "
           log.white ourFile
           log.moat 1
-        git.deleteFile modulePath, ourFile
+        git.remove modulePath, ourFile
 
     .then -> git.commit modulePath, "rename commit"
     .then (commit) -> state.renameCommit = commit
