@@ -59,8 +59,9 @@ git.pushVersion = (modulePath, version, options = {}) ->
       force: options.force
 
   .then ->
-    git.pushBranch modulePath, options.remote,
+    git.pushBranch modulePath,
       force: options.force
+      remote: options.remote
 
   .then ->
     git.pushTags modulePath,
@@ -72,8 +73,9 @@ git.pushVersion = (modulePath, version, options = {}) ->
     # Force an upstream branch to exist. Is this possibly dangerous?
     if /^fatal: The current branch [^\s]+ has no upstream branch/.test error.message
 
-      return git.pushBranch modulePath, options.remote,
+      return git.pushBranch modulePath,
         force: options.force
+        remote: options.remote
         upstream: yes
 
       .then ->
