@@ -1,6 +1,7 @@
 
 assertValid = require "assertValid"
 isValid = require "isValid"
+valido = require "valido"
 exec = require "exec"
 
 MergeStrategy = require "./MergeStrategy"
@@ -8,13 +9,18 @@ MergeStrategy = require "./MergeStrategy"
 require "./isClean"
 git = require "./core"
 
+commitTypes = valido [
+  "string"
+  {from: "string", to: "string"}
+]
+
 optionTypes =
   strategy: [MergeStrategy, "?"]
 
 module.exports =
 git.pick = (modulePath, commit, options = {}) ->
   assertValid modulePath, "string"
-  assertValid commit, {from: "string", to: "string"}
+  assertValid commit, commitTypes
   assertValid options, optionTypes
 
   args =
