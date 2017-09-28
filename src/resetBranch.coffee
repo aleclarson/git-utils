@@ -8,7 +8,8 @@ exec = require "exec"
 git = require "./core"
 
 optionTypes =
-  clean: "boolean?"
+  soft: "boolean?"
+  hard: "boolean?"
 
 module.exports =
 git.resetBranch = (modulePath, commit, options) ->
@@ -24,9 +25,12 @@ git.resetBranch = (modulePath, commit, options) ->
 
   if commit is null
     exec.async "git update-ref -d HEAD", {cwd: modulePath}
-    .then -> options.clean and exec.async "git reset --hard", {cwd: modulePath}
+    .then -> options.hard and exec.async "git reset --hard", {cwd: modulePath}
 
   else
-    hardness = if options.clean then "--hard" else "--soft"
+    hardness =
+      if options.hard then "--hard"
+      else if options.soft then "--soft"
+      else "--mixed"
     exec.async "git reset", [hardness, commit], {cwd: modulePath}
     # TODO: Resolve with the new HEAD commit
