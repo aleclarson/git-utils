@@ -17,10 +17,10 @@ git.resetBranch = (modulePath, commit, options) ->
   if isValid commit, "object"
     options = commit
     commit = "HEAD"
-  else options ?= {}
+  else
+    options ?= {}
 
   assertValid modulePath, "string"
-  assertValid commit, "string|null"
   assertValid options, optionTypes
 
   if commit is null
@@ -28,9 +28,13 @@ git.resetBranch = (modulePath, commit, options) ->
     .then -> options.hard and exec.async "git reset --hard", {cwd: modulePath}
 
   else
+    commit ?= "HEAD"
+    assertValid commit, "string|null"
+
     hardness =
       if options.hard then "--hard"
       else if options.soft then "--soft"
       else "--mixed"
+
     exec.async "git reset", [hardness, commit], {cwd: modulePath}
     # TODO: Resolve with the new HEAD commit
