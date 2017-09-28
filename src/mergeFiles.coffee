@@ -72,7 +72,7 @@ git.mergeFiles = (modulePath, options = {}) ->
 
   # Squash the commit history.
   .then ->
-    git.resetBranch modulePath, null
+    git.resetBranch modulePath, null, {soft: true}
     .then -> git.stageFiles modulePath, "*"
     .then -> git.commit modulePath, "squash commit"
 
