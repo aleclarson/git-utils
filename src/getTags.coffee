@@ -7,11 +7,9 @@ git = require "./core"
 
 module.exports =
 git.getTags = (modulePath) ->
-
-  assertType modulePath, String
+  assertValid modulePath, "string"
 
   exec.async "git tag", cwd: modulePath
-
   .then (stdout) ->
 
     if stdout.length is 0
