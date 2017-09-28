@@ -11,6 +11,7 @@ optionTypes =
   force: "boolean?"
   remote: "string?"
   branch: "string?"
+  keyPath: "string?"
   upstream: "boolean?"
   listener: "function?"
 
@@ -33,8 +34,15 @@ git.pushBranch = (modulePath, options = {}) ->
     then args.push branch + ":" + options.branch
     else args.push branch
 
+    if options.keyPath
+      env = {}
+      env.GIT_SSH_COMMAND =
+        "ssh -i #{options.keyPath} -F /dev/null" +
+        if options.debug then " -vvv" else ""
+
     exec.async "git push", args,
       cwd: modulePath
+      env: env or process.env
       listener: options.listener
 
     .fail (error) ->
