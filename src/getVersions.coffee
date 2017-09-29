@@ -13,7 +13,7 @@ git.getVersions = (modulePath) ->
   git.getTags modulePath
   .then (tagNames) ->
 
-    versions = SortedArray [], semver.compare
+    versions = new SortedArray semver.compare
 
     for tagName in tagNames
       continue if not semver.valid tagName
