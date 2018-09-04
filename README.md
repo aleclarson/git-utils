@@ -1,14 +1,11 @@
-
-# git-utils v1.4.0 ![stable](https://img.shields.io/badge/stability-stable-4EBA0F.svg?style=flat)
+# git-utils v1.4.0
 
 - [addBranch](): Equivalent to `git checkout -b [branch-name]`.
 - [addTag](): Equivalent to `git tag [tag-name]`.
 - [assertClean](): Throws if the working tree has any changes.
-- [assertRepo](): Throws if the given path is not a git repository.
 - [assertStaged](): Throws if the staging area is empty.
 - [changeBranch](): Equivalent to `git checkout [branch-name]`.
 - [diff](): Equivalent to `git diff`.
-- [findVersion](): Check if a version exists, and find its index in the array of versions.
 - [getBranches](): Equivalent to `git branch`.
 - [getCurrentBranch](): Get only the name of the current branch.
 - [getHead](): Get the SHA of the HEAD.
@@ -19,7 +16,6 @@
 - [hasBranch](): Returns true if the given branch name exists.
 - [hasChanges](): Returns true if any uncommitted changes exist. Can be more specific.
 - [isClean](): Returns true if the working tree has no changes.
-- [isRepo](): Returns true if the given path is a git repository.
 - [isStaged](): Returns true if the staging area is not empty.
 - [mergeBranch](): Equivalent to `git merge`.
 - [pick](): Equivalent to `git cherry-pick [commit-range]`.
