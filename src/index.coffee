@@ -3,7 +3,6 @@ module.exports = require "./core"
 
 require "./addBranch"
 require "./addTag"
-require "./assertRepo"
 require "./blame"
 require "./commit"
 require "./deleteBranch"
