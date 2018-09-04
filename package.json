@@ -1,12 +1,9 @@
 {
   "name": "git-utils",
   "version": "1.4.0",
-  "main": "js/index",
-  "plugins": [
-    "lotus-coffee"
-  ],
+  "main": "lib/index",
   "scripts": {
-    "build": "coffee-build -v 1.12.x -b -o js src",
+    "build": "coffee-build src -o lib",
     "postinstall": "npm run build"
   },
   "dependencies": {
@@ -20,5 +17,8 @@
     "isValid": "aleclarson/isValid#1.0.0",
     "semver": "^5.5.0",
     "valido": "aleclarson/valido#1.1.4"
+  },
+  "devDependencies": {
+    "coffeescript": "1.12.x"
   }
 }
