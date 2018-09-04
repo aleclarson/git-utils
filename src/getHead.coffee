@@ -1,6 +1,4 @@
-
 assertValid = require "assertValid"
-Promise = require "Promise"
 exec = require "exec"
 
 require "./getBranch"
@@ -12,45 +10,28 @@ optionTypes =
   message: "boolean?"
 
 module.exports =
-git.getHead = (modulePath, branchName, options = {}) ->
-  assertValid modulePath, "string"
-  assertValid branchName, "string?"
-  assertValid options, optionTypes
+git.getHead = (repo, branch, opts = {}) ->
+  assertValid repo, "string"
+  assertValid branch, "string?"
+  assertValid opts, optionTypes
 
-  return Promise.try ->
+  if !branch
+    branch = await git.getBranch repo
 
-    if branchName
-      return git.hasBranch modulePath, branchName
-      .then (hasBranch) ->
-        return if hasBranch
-        branchName = null
+  else if !git.hasBranch repo, branch
+    return null
 
-    git.getBranch modulePath
-    .then (currentBranch) ->
-      branchName = currentBranch
+  stdout = await exec "git log", [
+    "-1"
+    "--pretty=oneline"
+    if opts.remote
+    then opts.remote + "/" + branch
+    else branch
+  ], {cwd: repo}
 
-  .then ->
+  separator = stdout.indexOf " "
+  id = stdout.slice 0, separator
 
-    if branchName is null
-      return null
-
-    args = [
-      "-1"
-      "--pretty=oneline"
-      if options.remote
-      then options.remote + "/" + branchName
-      else branchName
-    ]
-
-    exec.async "git log", args, cwd: modulePath
-
-    .then (stdout) ->
-
-      separator = stdout.indexOf " "
-
-      id = stdout.slice 0, separator
-
-      if options.message
-        return { id, message: stdout.slice separator + 1 }
-
-      return id
+  if opts.message
+  then { id, message: stdout.slice separator + 1 }
+  else id

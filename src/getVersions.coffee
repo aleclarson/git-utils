@@ -1,22 +1,17 @@
-
 SortedArray = require "SortedArray"
 assertValid = require "assertValid"
-semver = require "node-semver"
+semver = require "semver"
 
 require "./getTags"
 git = require "./core"
 
 module.exports =
-git.getVersions = (modulePath) ->
-  assertValid modulePath, "string"
+git.getVersions = (repo) ->
+  assertValid repo, "string"
 
-  git.getTags modulePath
-  .then (tagNames) ->
+  versions = new SortedArray semver.compare
+  for tag in await git.getTags repo
+    if semver.valid tag
+      versions.insert tag
 
-    versions = new SortedArray semver.compare
-
-    for tagName in tagNames
-      continue if not semver.valid tagName
-      versions.insert tagName
-
-    return versions.array
+  return versions.array

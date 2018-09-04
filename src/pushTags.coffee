@@ -1,4 +1,3 @@
-
 assertValid = require "assertValid"
 exec = require "exec"
 os = require "os"
@@ -10,23 +9,21 @@ optionTypes =
   remote: "string?"
 
 module.exports =
-git.pushTags = (modulePath, options = {}) ->
-  assertValid modulePath, "string"
-  assertValid options, optionTypes
+git.pushTags = (repo, opts = {}) ->
+  assertValid repo, "string"
+  assertValid opts, optionTypes
 
   args = [
-    options.remote or "origin"
+    opts.remote or "origin"
     "--tags"
   ]
 
-  if options.force
+  if opts.force
     args.push "-f"
 
-  exec.async "git push", args, cwd: modulePath
-
-  .fail (error) ->
-
-    lines = error.message.split os.EOL
+  try await exec "git push", args, {cwd: repo}
+  catch err
+    lines = err.message.split os.EOL
 
     if /\(already exists\)$/.test lines[1]
       throw Error "Tag already exists!"
@@ -37,4 +34,4 @@ git.pushTags = (modulePath, options = {}) ->
     if /\* \[new tag\]/.test lines[1]
       return # 'git push' incorrectly prints using stderr
 
-    throw error
+    throw err

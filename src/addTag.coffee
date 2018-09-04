@@ -1,4 +1,3 @@
-
 assertValid = require "assertValid"
 exec = require "exec"
 
@@ -8,21 +7,19 @@ optionTypes =
   force: "boolean?"
 
 module.exports =
-git.addTag = (modulePath, tagName, options = {}) ->
-  assertValid modulePath, "string"
-  assertValid tagName, "string"
-  assertValid options, optionTypes
+git.addTag = (repo, tag, opts = {}) ->
+  assertValid repo, "string"
+  assertValid tag, "string"
+  assertValid opts, optionTypes
 
-  args = [ tagName ]
-  args.unshift "-f" if options.force
+  args = [ tag ]
+  args.push "-f" if opts.force
 
-  exec.async "git tag", args, cwd: modulePath
+  try await exec "git tag", args, {cwd: repo}
+  catch err
 
-  .fail (error) ->
-
-    if not options.force
-      expected = "fatal: tag '#{tagName}' already exists"
-      if error.message is expected
+    if !opts.force
+      if err.message is "fatal: tag '#{tag}' already exists"
         throw Error "Tag already exists!"
 
-    throw error
+    throw err

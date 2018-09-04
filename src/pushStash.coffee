@@ -1,4 +1,3 @@
-
 assertValid = require "assertValid"
 exec = require "exec"
 
@@ -9,19 +8,18 @@ optionTypes =
   includeUntracked: "boolean?"
 
 module.exports =
-git.pushStash = (modulePath, options = {}) ->
-  assertValid modulePath, "string"
-  assertValid options, optionTypes
+git.pushStash = (repo, opts = {}) ->
+  assertValid repo, "string"
+  assertValid opts, optionTypes
 
   args = []
-  args.push "--keep-index" if options.keepIndex
-  args.push "--include-untracked" if options.includeUntracked
+  args.push "--keep-index" if opts.keepIndex
+  args.push "--include-untracked" if opts.includeUntracked
 
-  exec.async "git stash", args, cwd: modulePath
+  try await exec "git stash", args, {cwd: repo}
+  catch err
 
-  .fail (error) ->
-
-    if /bad revision 'HEAD'/.test error.message
+    if /bad revision 'HEAD'/.test err.message
       throw Error "Cannot stash unless an initial commit exists!"
 
-    throw error
+    throw err

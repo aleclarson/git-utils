@@ -1,4 +1,3 @@
-
 assertValid = require "assertValid"
 Finder = require "finder"
 exec = require "exec"
@@ -11,22 +10,19 @@ findName = Finder { regex, group: 1 }
 findUri = Finder { regex, group: 2 }
 
 module.exports =
-git.getRemotes = (modulePath) ->
-  assertValid modulePath, "string"
+git.getRemotes = (repo) ->
+  assertValid repo, "string"
 
-  exec.async "git remote --verbose", cwd: modulePath
-  .then (stdout) ->
+  remotes = Object.create null
 
-    remotes = Object.create null
+  stdout = await exec "git remote --verbose", {cwd: repo}
+  return remotes if !stdout.length
 
-    if stdout.length is 0
-      return remotes
+  for line in stdout.split os.EOL
+    name = findName line
+    remote = remotes[name] or= {}
+    if /\(push\)$/.test line
+    then remote.push = findUri line
+    else remote.fetch = findUri line
 
-    for line in stdout.split os.EOL
-      name = findName line
-      remote = remotes[name] ?= {}
-      if /\(push\)$/.test line
-        remote.push = findUri line
-      else remote.fetch = findUri line
-
-    return remotes
+  return remotes

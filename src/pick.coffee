@@ -1,4 +1,3 @@
-
 assertValid = require "assertValid"
 isValid = require "isValid"
 valido = require "valido"
@@ -18,28 +17,27 @@ optionTypes =
   strategy: [MergeStrategy, "?"]
 
 module.exports =
-git.pick = (modulePath, commit, options = {}) ->
-  assertValid modulePath, "string"
+git.pick = (repo, commit, opts = {}) ->
+  assertValid repo, "string"
   assertValid commit, commitTypes
-  assertValid options, optionTypes
+  assertValid opts, optionTypes
 
   args =
     if isValid commit, "object"
     then [ commit.from + ".." + commit.to ]
     else [ commit ]
 
-  if options.strategy
-    args.push "-X", options.strategy
+  if opts.strategy
+    args.push "-X", opts.strategy
 
-  exec.async "git cherry-pick", args, cwd: modulePath
+  try
+    await exec "git cherry-pick", args, {cwd: repo}
+    clean = await git.isClean repo
 
-  .then -> git.isClean modulePath
+  catch err
+    # `cherry-pick` prints to stderr for merge conflicts
+    if !clean = /error: could not apply/.test err.message
+      throw err
 
-  # `cherry-pick` prints to stderr for merge conflicts
-  .fail (error) ->
-    return yes if /error: could not apply/.test error.message
-    throw error
-
-  .then (clean) ->
-    return if clean
-    exec.async "git cherry-pick --continue", cwd: modulePath
+  if !clean
+    await exec "git cherry-pick --continue", {cwd: repo}

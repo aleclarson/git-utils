@@ -1,26 +1,25 @@
 # TODO: Test with `oldName` not existing.
-
 assertValid = require "assertValid"
+path = require "path"
 exec = require "exec"
 
 git = require "./core"
 
 module.exports =
-git.renameFile = (modulePath, oldName, newName) ->
-  assertValid modulePath, "string"
+git.renameFile = (repo, oldName, newName) ->
+  assertValid repo, "string"
   assertValid oldName, "string"
   assertValid newName, "string"
 
-  rootLength = modulePath.length
+  await exec "git mv",
+    makeRelative(oldName),
+    makeRelative(newName),
+    {cwd: repo}
 
-  if oldName[0] is "/"
-    unless modulePath is oldName.slice 0, rootLength
-      throw Error "'oldName' must be a descendant of 'modulePath'!"
-    oldName = oldName.slice rootLength + 1
+makeRelative = (repo, file) ->
+  return file if !path.isAbsolute file
 
-  if newName[0] is "/"
-    unless modulePath is newName.slice 0, rootLength
-      throw Error "'newName' must be a descendant of 'modulePath'!"
-    newName = newName.slice rootLength + 1
+  name = path.relative repo, file
+  return name if name[0] != "."
 
-  exec.async "git mv", [ oldName, newName ], cwd: modulePath
+  throw Error "Absolute path '#{file}' cannot be outside '#{repo}'"

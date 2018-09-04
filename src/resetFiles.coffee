@@ -1,9 +1,6 @@
-
 assertValid = require "assertValid"
-isValid = require "isValid"
 path = require "path"
 exec = require "exec"
-sync = require "sync"
 
 git = require "./core"
 
@@ -12,32 +9,27 @@ optionTypes =
   dryRun: "boolean?"
 
 module.exports =
-git.resetFiles = (modulePath, files, options = {}) ->
-  assertValid modulePath, "string"
+git.resetFiles = (repo, files, opts = {}) ->
+  assertValid repo, "string"
   assertValid files, "string|array"
-  assertValid options, optionTypes
+  assertValid opts, optionTypes
 
-  if isValid files, "string"
+  if typeof files == "string"
     files = [files]
 
-  else if not files.length
+  else if !files.length
     return
 
-  files = sync.map files, (filePath) ->
-    if filePath[0] is path.sep
-      filePath = path.relative modulePath, filePath
-      if filePath[0] is "."
-        throw Error "'filePath' must be a descendant of: '#{modulePath}'"
-    return filePath
+  files = files.map (file) ->
+    return file if !path.isAbsolute file
 
-  args = [
-    options.commit or "HEAD"
-    "--"
-  ].concat files
+    name = path.relative repo, file
+    return name if name[0] != "."
 
-  if options.dryRun
-    args.push "-p"
+    throw Error "Absolute path '#{file}' cannot be outside '#{repo}'"
 
-  exec.async "git checkout", args, cwd: modulePath
+  args = [ opts.commit or "HEAD" ]
+  args.push "-p" if opts.dryRun
 
+  await exec "git checkout", args, "--", files, {cwd: repo}
   # TODO: Possibly parse the 'dryRun' output?

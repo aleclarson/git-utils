@@ -1,16 +1,17 @@
-
 assertValid = require "assertValid"
-isValid = require "isValid"
 exec = require "exec"
 
 git = require "./core"
 
 module.exports =
-git.unstageFiles = (modulePath, files) ->
-  assertValid modulePath, "string"
+git.unstageFiles = (repo, files) ->
+  assertValid repo, "string"
   assertValid files, "string|array"
 
-  if isValid files, "string"
+  if typeof files == "string"
     files = [files]
 
-  exec.async "git reset --", files, cwd: modulePath
+  else if !files.length
+    return
+
+  await exec "git reset --", files, {cwd: repo}

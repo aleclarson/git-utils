@@ -1,4 +1,3 @@
-
 assertValid = require "assertValid"
 isValid = require "isValid"
 Finder = require "finder"
@@ -12,54 +11,47 @@ optionTypes =
   raw: "boolean?"
 
 module.exports =
-git.getBranches = (modulePath, remoteName, options) ->
+git.getBranches = (repo, remoteName, opts) ->
+  assertValid repo, "string"
 
-  if isValid remoteName, "string"
-    options ?= {}
-  else
-    options = remoteName or {}
+  if isValid remoteName, "object"
+    opts = remoteName
     remoteName = null
+  else
+    opts or= {}
 
-  assertValid modulePath, "string"
-  assertValid remoteName, "string|null"
-  assertValid options, optionTypes
+  assertValid remoteName, "string?"
+  assertValid opts, optionTypes
 
   if remoteName
+  then getRemoteBranches repo, remoteName, opts
+  else getLocalBranches repo, opts
 
-    return git.getRemotes modulePath
+getRemoteBranches = (repo, remoteName, opts) ->
+  remotes = await git.getRemotes repo
+  remoteUri = remotes[remoteName].push
 
-    .then (remotes) ->
-      remoteUri = remotes[remoteName].push
-      exec.async "git ls-remote --heads #{remoteUri}", cwd: modulePath
+  stdout = await exec "git ls-remote --heads #{remoteUri}", {cwd: repo}
+  return stdout if opts.raw
 
-    .then (stdout) ->
+  findName = Finder /refs\/heads\/(.+)$/
+  branches = []
+  for line in stdout.split os.EOL
+    if name = findName line
+      branches.push name
 
-      if options.raw
-        return stdout
+  return branches
 
-      findName = Finder /refs\/heads\/(.+)$/
-      branches = []
-      for line in stdout.split os.EOL
-        name = findName line
-        continue if not name
-        branches.push name
+getLocalBranches = (repo, opts) ->
+  stdout = await exec "git branch", {cwd: repo}
+  return stdout if opts.raw
 
-      return branches
-
-  return exec.async "git branch", cwd: modulePath
-
-  .then (stdout) ->
-
-    if options.raw
-      return stdout
-
-    findName = Finder /^[\*\s]+([a-zA-Z0-9_\-\.]+)$/
-    branches = []
-    for line in stdout.split os.EOL
-      name = findName line
-      continue if not name
+  findName = Finder /^[\*\s]+([a-zA-Z0-9_\-\.]+)$/
+  branches = []
+  for line in stdout.split os.EOL
+    if name = findName line
       branches.push name
       if line[0] is "*"
         branches.current = name
 
-    return branches
+  return branches

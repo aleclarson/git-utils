@@ -1,4 +1,3 @@
-
 assertValid = require "assertValid"
 exec = require "exec"
 os = require "os"
@@ -6,13 +5,11 @@ os = require "os"
 git = require "./core"
 
 module.exports =
-git.getTags = (modulePath) ->
-  assertValid modulePath, "string"
+git.getTags = (repo) ->
+  assertValid repo, "string"
 
-  exec.async "git tag", cwd: modulePath
-  .then (stdout) ->
+  stdout = await exec "git tag", {cwd: repo}
 
-    if stdout.length is 0
-      return []
-
-    return stdout.split os.EOL
+  if stdout.length
+  then stdout.split os.EOL
+  else []

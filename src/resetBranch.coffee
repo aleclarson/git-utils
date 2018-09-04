@@ -1,6 +1,5 @@
 # TODO: Test with `commit` being a non-existing commit.
 # TODO: Test with `commit` being a non-existing branch.
-
 assertValid = require "assertValid"
 isValid = require "isValid"
 exec = require "exec"
@@ -12,29 +11,29 @@ optionTypes =
   hard: "boolean?"
 
 module.exports =
-git.resetBranch = (modulePath, commit, options) ->
+git.resetBranch = (repo, commit, opts) ->
+  assertValid repo, "string"
 
   if isValid commit, "object"
-    options = commit
-    commit = "HEAD"
+    opts = commit
+    commit = undefined
   else
-    options ?= {}
+    opts or= {}
 
-  assertValid modulePath, "string"
-  assertValid options, optionTypes
+  assertValid commit, "string?"
+  assertValid opts, optionTypes
 
-  if commit is null
-    exec.async "git update-ref -d HEAD", {cwd: modulePath}
-    .then -> options.hard and exec.async "git reset --hard", {cwd: modulePath}
+  if commit == null
+    await exec "git update-ref -d HEAD", {cwd: repo}
+    if opts.hard
+      await exec "git reset --hard", {cwd: repo}
 
   else
-    commit ?= "HEAD"
-    assertValid commit, "string|null"
-
+    commit or= "HEAD"
     hardness =
-      if options.hard then "--hard"
-      else if options.soft then "--soft"
+      if opts.hard then "--hard"
+      else if opts.soft then "--soft"
       else "--mixed"
 
-    exec.async "git reset", [hardness, commit], {cwd: modulePath}
+    await exec "git reset", hardness, commit, {cwd: repo}
     # TODO: Resolve with the new HEAD commit

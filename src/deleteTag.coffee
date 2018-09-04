@@ -1,4 +1,3 @@
-
 assertValid = require "assertValid"
 exec = require "exec"
 
@@ -8,13 +7,11 @@ optionTypes =
   remote: "string?"
 
 module.exports =
-git.deleteTag = (modulePath, tagName, options = {}) ->
-  assertValid modulePath, "string"
-  assertValid tagName, "string"
-  assertValid options, optionTypes
+git.deleteTag = (repo, tag, opts = {}) ->
+  assertValid repo, "string"
+  assertValid tag, "string"
+  assertValid opts, optionTypes
 
-  exec.async "git tag -d #{tagName}", cwd: modulePath
-
-  .then ->
-    return if not options.remote
-    exec.async "git push #{options.remote} :#{tagName}", cwd: modulePath
+  await exec "git tag -d #{tag}", {cwd: repo}
+  if opts.remote
+    await exec "git push #{opts.remote} :#{tag}", {cwd: repo}

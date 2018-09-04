@@ -1,4 +1,3 @@
-
 assertValid = require "assertValid"
 exec = require "exec"
 
@@ -8,19 +7,17 @@ optionTypes =
   lines: "array?"
 
 module.exports =
-git.blame = (modulePath, filePath, options = {}) ->
-  assertValid modulePath, "string"
-  assertValid filePath, "string"
-  assertValid options, optionTypes
+git.blame = (repo, file, opts = {}) ->
+  assertValid repo, "string"
+  assertValid file, "string"
+  assertValid opts, optionTypes
 
   args = [ "--porcelain" ]
 
-  { lines } = options
+  { lines } = opts
   if lines and lines.length >= 2
     args.push "-L" + lines[0] + "," + lines[1]
 
-  args.push "--", filePath
-
-  exec.async "git blame", args, cwd: modulePath
-
+  args.push "--", file
+  await exec "git blame", args, {cwd: repo}
   # TODO: Parse the output

@@ -1,6 +1,4 @@
-
 assertValid = require "assertValid"
-Promise = require "Promise"
 exec = require "exec"
 
 MergeStrategy = require "./MergeStrategy"
@@ -16,45 +14,36 @@ optionTypes =
   strategy: [MergeStrategy, "?"]
 
 module.exports =
-git.mergeBranch = (modulePath, options) ->
-  assertValid modulePath, "string"
-  assertValid options, optionTypes
+git.mergeBranch = (repo, opts) ->
+  assertValid repo, "string"
+  assertValid opts, optionTypes
 
-  startBranch = null
+  unless await git.isClean repo
+    throw Error "The current branch cannot have any uncommitted changes!"
 
-  git.isClean modulePath
-  .assert "The current branch cannot have any uncommitted changes!"
+  if opts.ours
+    startBranch = await git.getBranch repo
+    if opts.ours != startBranch
+      await git.setBranch repo, opts.ours
 
-  .then ->
-    git.getBranch modulePath
-    .then (currentBranch) ->
-      startBranch = currentBranch
+  args = [
+    opts.theirs
+    "--no-commit"
+    "--no-ff"
+  ]
 
-  .then ->
-    return if not options.ours
-    git.setBranch modulePath, options.ours
+  if opts.strategy
+    args.push "-X", opts.strategy
 
-  .then ->
+  try await exec "git merge", args, {cwd: repo}
+  catch err
 
-    args = [
-      options.theirs
-      "--no-commit"
-      "--no-ff"
-    ]
-
-    if options.strategy
-      args.push "-X", options.strategy
-
-    exec.async "git merge", args, cwd: modulePath
+    if /Automatic merge went well/.test err.message
+      return # 'git merge' incorrectly prints to 'stderr'
 
     # TODO: Fail gracefully if the merge was empty.
-    .fail (error) ->
+    throw err
 
-      if /Automatic merge went well/.test error.message
-        return # 'git merge' incorrectly prints to 'stderr'
-
-      throw error
-
-  .always ->
-    return if not options.ours
-    git.setBranch modulePath, startBranch
+  finally
+    if opts.ours and opts.ours != startBranch
+      await git.setBranch repo, startBranch

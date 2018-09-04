@@ -1,7 +1,6 @@
 # TODO: Test against an empty diff.
 # TODO: Test with non-existent commits.
 # TODO: Test with branches.
-
 {find} = require "finder"
 
 assertValid = require "assertValid"
@@ -11,14 +10,14 @@ os = require "os"
 git = require "./core"
 
 module.exports =
-git.diff = (modulePath, firstCommit, lastCommit = "HEAD") ->
-  assertValid modulePath, "string"
+git.diff = (repo, firstCommit, lastCommit = "HEAD") ->
+  assertValid repo, "string"
   assertValid firstCommit, "string"
   assertValid lastCommit, "string"
 
-  exec.async "git diff --raw #{firstCommit}..#{lastCommit}",  cwd: modulePath
-
-  .then (stdout) ->
+  try
+    range = firstCommit + ".." + lastCommit
+    stdout = await exec "git diff --raw #{range}", {cwd: repo}
     lines = stdout.split os.EOL
     regex = /^:[0-9]{6} [0-9]{6} [0-9a-z]{7}\.\.\. [0-9a-z]{7}\.\.\. (.)\t(.+)$/
     return lines.map (line) ->
@@ -26,9 +25,9 @@ git.diff = (modulePath, firstCommit, lastCommit = "HEAD") ->
       path = find regex, line, 2
       return { status, path }
 
-  .fail (error) ->
+  catch err
 
-    if /unknown revision or path not in the working tree/.test error.message
+    if /unknown revision or path not in the working tree/.test err.message
       throw Error "Unknown revision (or path not in the working tree)!"
 
-    throw error
+    throw err

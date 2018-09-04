@@ -1,4 +1,3 @@
-
 assertValid = require "assertValid"
 exec = require "exec"
 os = require "os"
@@ -9,30 +8,29 @@ optionTypes =
   remote: "string?"
 
 module.exports =
-git.deleteBranch = (modulePath, branchName, options = {}) ->
-  assertValid modulePath, "string"
-  assertValid branchName, "string"
-  assertValid options, optionTypes
+git.deleteBranch = (repo, branch, opts = {}) ->
+  assertValid repo, "string"
+  assertValid branch, "string"
+  assertValid opts, optionTypes
 
-  exec.async "git branch -D #{branchName}", cwd: modulePath
+  try
+    await exec "git branch -D #{branch}", {cwd: repo}
+    if opts.remote
+      await exec "git push #{opts.remote} --delete #{branch}", {cwd: repo}
 
-  .then ->
-    return if not options.remote
-    exec.async "git push #{options.remote} --delete #{branchName}", cwd: modulePath
+  catch err
 
-  .fail (error) ->
-
-    expected = "error: branch '#{branchName}' not found."
-    if error.message is expected
+    expected = "error: branch '#{branch}' not found."
+    if err.message is expected
       throw Error "The given branch does not exist!"
 
-    expected = "error: Cannot delete the branch '#{branchName}' which you are currently on."
-    if error.message is expected
+    expected = "error: Cannot delete the branch '#{branch}' which you are currently on."
+    if err.message is expected
       throw Error "Cannot delete the current branch!"
 
-    lines = error.message.split os.EOL
-    expected = "fatal: '#{branchName}' does not appear to be a git repository"
+    lines = err.message.split os.EOL
+    expected = "fatal: '#{branch}' does not appear to be a git repository"
     if lines[0] is expected
       throw Error "The given remote repository does not exist!"
 
-    throw error
+    throw err

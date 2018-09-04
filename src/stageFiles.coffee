@@ -1,23 +1,23 @@
-
 assertValid = require "assertValid"
-isValid = require "isValid"
 exec = require "exec"
 
 git = require "./core"
 
 module.exports =
-git.stageFiles = (modulePath, files) ->
-  assertValid modulePath, "string"
+git.stageFiles = (repo, files) ->
+  assertValid repo, "string"
   assertValid files, "string|array"
 
-  if isValid files, "string"
+  if typeof files == "string"
     files = [files]
 
-  exec.async "git add", files, cwd: modulePath
+  else if !files.length
+    return
 
-  .fail (error) ->
+  try await exec "git add", files, {cwd: repo}
+  catch err
 
-    if /The following paths are ignored/.test error.message
+    if /The following paths are ignored/.test err.message
       return # 'git add' complains when ignored files are added (eg: 'git add *').
 
-    throw error
+    throw err

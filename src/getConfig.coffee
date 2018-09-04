@@ -1,7 +1,6 @@
-
 assertValid = require "assertValid"
 exec = require "exec"
-log = require "log"
+os = require "os"
 
 git = require "./core"
 
@@ -14,18 +13,12 @@ git.getConfig = (keyPath) ->
     then ["--get", keyPath]
     else ["--list"]
 
-  exec.async "git config", args
+  stdout = await exec "git config", args
+  return stdout if keyPath
 
-  .then (stdout) ->
+  config = Object.create null
+  stdout.split(os.EOL).forEach (entry) ->
+    [key, value] = entry.split "="
+    config[key] = value
 
-    if keyPath
-      return stdout
-
-    config = Object.create null
-    stdout
-      .split log.ln
-      .forEach (entry) ->
-        [key, value] = entry.split "="
-        config[key] = value
-
-    return config
+  return config

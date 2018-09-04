@@ -1,6 +1,4 @@
-
 assertValid = require "assertValid"
-inArray = require "in-array"
 
 require "./getBranches"
 git = require "./core"
@@ -9,11 +7,10 @@ optionTypes =
   remote: "string?"
 
 module.exports =
-git.hasBranch = (modulePath, branchName, options = {}) ->
-  assertValid modulePath, "string"
-  assertValid branchName, "string"
-  assertValid options, optionTypes
+git.hasBranch = (repo, branch, opts = {}) ->
+  assertValid repo, "string"
+  assertValid branch, "string"
+  assertValid opts, optionTypes
 
-  git.getBranches modulePath, options.remote
-  .then (branchNames) ->
-    inArray branchNames, branchName
+  branches = await git.getBranches repo, opts.remote
+  return branches.includes branch

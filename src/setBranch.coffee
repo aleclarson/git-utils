@@ -1,6 +1,4 @@
-
 assertValid = require "assertValid"
-Promise = require "Promise"
 exec = require "exec"
 
 require "./getBranch"
@@ -12,42 +10,33 @@ optionTypes =
   force: "boolean?"
 
 module.exports =
-git.setBranch = (modulePath, branchName, options = {}) ->
-  assertValid modulePath, "string"
-  assertValid branchName, "string"
-  assertValid options, optionTypes
+git.setBranch = (repo, branch, opts = {}) ->
+  assertValid repo, "string"
+  assertValid branch, "string"
+  assertValid opts, optionTypes
 
-  git.getBranch modulePath
-  .then (currentBranch) ->
+  currentBranch = await git.getBranch repo
+  if branch == currentBranch
+    return currentBranch
 
-    if currentBranch is branchName
-      return currentBranch
+  # The branch must be clean. (unless `opts.force` is used)
+  if !opts.force and !await git.isClean repo
+    throw Error "The current branch has uncommitted changes!"
 
-    # Unless force is applied, throw if the branch isnt clean.
-    Promise.try ->
-      return if options.force
-      git.isClean modulePath
-      .then (clean) ->
-        clean or throw Error "The current branch has uncommitted changes!"
+  args = [ branch ]
 
-    .then -> git.hasBranch modulePath, branchName
-    .then (branchExists) ->
+  # The branch must exist. (unless `opts.force` is used)
+  if !await git.hasBranch repo, branch
+    if !opts.force
+      throw Error "Unknown branch: '#{branch}'"
+    args.unshift "-b"
 
-      args = [ branchName ]
+  try await exec "git checkout", args, {cwd: repo}
+  catch err
+    {message} = err
 
-      # Create a new branch, if one doesnt exist.
-      # Throw an error unless `options.force` is true.
-      if not branchExists
-        options.force or throw Error "Invalid branch name!"
-        args.unshift "-b"
+    # 'git checkout' incorrectly prints to 'stderr'
+    return if message.startsWith "Switched to branch"
+    return if message.startsWith "Switched to a new branch"
 
-      exec.async "git checkout", args, cwd: modulePath
-
-      .fail (error) ->
-        {message} = error
-
-        # 'git checkout' incorrectly prints to 'stderr'
-        return if message.startsWith "Switched to branch"
-        return if message.startsWith "Switched to a new branch"
-
-        throw error
+    throw error

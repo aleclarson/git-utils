@@ -1,5 +1,4 @@
 # TODO: Test with `file` being a non-existing file.
-
 assertValid = require "assertValid"
 exec = require "exec"
 
@@ -10,13 +9,13 @@ optionTypes =
   recursive: "boolean?"
 
 module.exports =
-git.remove = (modulePath, files, options = {}) ->
-  assertValid modulePath, "string"
+git.remove = (repo, files, opts = {}) ->
+  assertValid repo, "string"
   assertValid files, "string|array"
-  assertValid options, optionTypes
+  assertValid opts, optionTypes
 
   args = []
-  args.push "-r" if options.recursive
-  args.push "--cached" if options.cached
+  args.push "-r" if opts.recursive
+  args.push "--cached" if opts.cached
 
-  exec.async "git rm", args.concat(files), cwd: modulePath
+  await exec "git rm", args.concat(files), {cwd: repo}
