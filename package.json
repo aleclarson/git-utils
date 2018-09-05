@@ -19,6 +19,6 @@
     "valido": "aleclarson/valido#1.1.4"
   },
   "devDependencies": {
-    "coffeescript": "1.12.x"
+    "coffeescript": "^2.3.0"
   }
 }
