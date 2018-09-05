@@ -95,13 +95,15 @@ You can use `git-utils/lib/commit`-style imports to avoid loading the entire lib
 
 #### `commit(repo: string, message: string): Promise<string>`
 
-  Create a commit from the staged changes.
+Create a commit from the staged changes.
 
-  The `message` can have any number of lines.
+The `message` can have any number of lines.
 
-  Resolves with the commit SHA.
+Resolves with the commit SHA.
 
-  &nbsp;
+[Back to top](#readme)
+
+&nbsp;
 
 #### `getHead(repo: string, branch?: string, opts?: Object): Promise<mixed>`
 
@@ -119,6 +121,10 @@ When undefined, the local repository is used.
 The `message` option causes the resolved value to become
 `{id, message}` where `id` is the SHA and `message` is the commit message.
 
+[Back to top](#readme)
+
+[Back to top](#readme)
+
 &nbsp;
 
 #### `pick(repo: string, commit: mixed, opts?: Object): Promise<void>`
@@ -134,17 +140,24 @@ where both `from` and `to` are SHA strings.
 The `strategy` option must be either `"ours"` or `"theirs"`. This option
 is used to auto-resolve merge conflicts.
 
+[Back to top](#readme)
+
 &nbsp;
 
 #### `revertHead(repo: string): Promise<void>`
 
 Undo the last commit, but keep the changes in the staging area.
 
+[Back to top](#readme)
+
 &nbsp;
+---
 
 #### `addBranch(repo: string, branch: string): Promise<void>`
 
 Create a new branch based off the current branch.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -160,11 +173,15 @@ The `remote` option lets you delete both the local and remote branches of the sa
 
 The `remoteOnly` option lets you delete the remote branch only. By default, both the local and remote tags are deleted.
 
+[Back to top](#readme)
+
 &nbsp;
 
 #### `getBranch(repo: string)`
 
 Get the current branch name.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -177,6 +194,8 @@ Get the local/remote array of branch names.
 
 The `raw` option skips the stdout parsing phase.
 
+[Back to top](#readme)
+
 &nbsp;
 
 #### `hasBranch(repo: string, branch: string, opts?: Object): Promise<boolean>`
@@ -187,6 +206,8 @@ Check if a local/remote branch name exists.
 - `remote?: boolean`
 
 The `remote` option lets you check a remote repository for a specific branch name.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -204,6 +225,8 @@ The `ours` option lets you choose the local destination branch. Defaults to the 
 The `theirs` option lets you choose the local branch being merged. This is *required*.
 
 The `strategy` option lets you auto-resolve any merge conflicts. If defined, it must be `"ours"` or `"theirs"`.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -231,6 +254,8 @@ The `upstream` option sets the upstream branch of the current local branch to th
 
 The `listener` option is called as output is piped from the `git push` command.
 
+[Back to top](#readme)
+
 &nbsp;
 
 #### `resetBranch(repo: string, commit?: string, opts?: Object): Promise<void>`
@@ -251,6 +276,8 @@ The `"hard"` mode erases all changes between the given `commit` and the previous
 The `"mixed"` mode preserves the changes between the given `commit` and the previous HEAD commit. Any staged changes are unstaged.
 
 The other modes are described in the `git` manual. Run `man git-reset` in the terminal.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -275,7 +302,10 @@ The `ifExists` option avoids creating a new branch if the given `branch` does *n
 
 The `mustExist` option will throw an error if the given `branch` does *not* exist.
 
+[Back to top](#readme)
+
 &nbsp;
+---
 
 #### `addTag(repo: string, tag: string, opts?: Object): Promise<void>`
 
@@ -285,6 +315,8 @@ Create a tag for the current HEAD commit.
 - `force?: boolean`
 
 The `force` option lets you overwrite an existing tag with the same name.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -300,11 +332,15 @@ The `remote` option lets you delete the given `tag` from a remote repository.
 
 The `remoteOnly` option lets you delete the remote tag only. By default, both the local and remote tags are deleted.
 
+[Back to top](#readme)
+
 &nbsp;
 
 #### `getTags(repo: string)`
 
 Get the array of local tags.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -320,6 +356,8 @@ The `force` option lets you overwrite an existing remote tag of the same name.
 
 The `remote` option lets you choose the remote repository to push to. Defaults to `"origin"`.
 
+[Back to top](#readme)
+
 &nbsp;
 
 #### `pushTags(repo: string, opts?: Object): Promise<void>`
@@ -334,7 +372,10 @@ The `force` option lets you overwrite any existing remote tags that clash with o
 
 The `remote` option lets you choose the remote repository to push to. Defaults to `"origin"`.
 
+[Back to top](#readme)
+
 &nbsp;
+---
 
 #### `diff(repo: string, fromCommit: string, toCommit?: string): Promise<Array>`
 
@@ -342,11 +383,15 @@ Get an array of `{status: string, path: string}` objects for each file modified,
 
 The `toCommit` argument defaults to `"HEAD"`.
 
+[Back to top](#readme)
+
 &nbsp;
 
 #### `popStash(repo: string): Promise<void>`
 
 Equivalent to `git stash pop`.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -361,6 +406,8 @@ Equivalent to `git stash`.
 The `keepStaged` option avoids stashing any staged changes.
 
 The `keepUntracked` option avoids stashing any untracked files.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -378,6 +425,8 @@ The `cached` option lets you remove only the paths that have staged changes.
 
 The `recursive` option lets you remove directories.
 
+[Back to top](#readme)
+
 &nbsp;
 
 #### `renameFile(repo: string, oldName: string, newName: string): Promise<void>`
@@ -385,6 +434,8 @@ The `recursive` option lets you remove directories.
 Rename a file and stage it.
 
 The given filenames can be relative or absolute, but cannot exist outside the repository.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -404,6 +455,8 @@ The `commit` option lets you choose which commit to revert to. Defaults to `"HEA
 
 The `dryRun` option avoids actually changing any files.
 
+[Back to top](#readme)
+
 &nbsp;
 
 #### `stageFiles(repo: string, files: mixed): Promise<void>`
@@ -411,6 +464,8 @@ The `dryRun` option avoids actually changing any files.
 Stage the given file paths.
 
 The `files` argument must be a file path or an array of file paths.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -420,7 +475,10 @@ Unstage the given file paths.
 
 The `files` argument must be a file path or an array of file paths.
 
+[Back to top](#readme)
+
 &nbsp;
+---
 
 #### `getStatus(repo: string, opts?: Object): Promise<mixed>`
 
@@ -446,11 +504,15 @@ The `raw` option changes the return value to the stdout of the `git status` comm
 
 The `remote` option changes the return value to `{branch: string, ahead: number, behind: number}` based on the upstream branch.
 
+[Back to top](#readme)
+
 &nbsp;
 
 #### `isClean(repo: string): Promise<boolean>`
 
 Resolves to true if the repository has no uncommitted changes.
+
+[Back to top](#readme)
 
 &nbsp;
 
@@ -458,14 +520,22 @@ Resolves to true if the repository has no uncommitted changes.
 
 Resolves to true if the repository has staged changes.
 
+[Back to top](#readme)
+
 &nbsp;
+---
 
 #### `getRemotes(repo: string)`
 
 Get the array of remote repositories, where each repository is an object like `{push: string, fetch: string}`.
 
+[Back to top](#readme)
+
 &nbsp;
+---
 
 #### `getVersions(repo: string)`
 
-  Get the *sorted* array of tags that use semantic versioning.
+Get the *sorted* array of tags that use semantic versioning.
+
+[Back to top](#readme)
