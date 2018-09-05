@@ -11,7 +11,7 @@ git.addBranch = (repo, branch) ->
 
   try
     await exec "git checkout -b #{branch}", {cwd: repo}
-    return branch
+    return
 
   catch err
 

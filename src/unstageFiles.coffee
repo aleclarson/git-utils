@@ -15,3 +15,4 @@ git.unstageFiles = (repo, files) ->
     return
 
   await exec "git reset --", files, {cwd: repo}
+  return

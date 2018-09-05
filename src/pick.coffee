@@ -41,3 +41,5 @@ git.pick = (repo, commit, opts = {}) ->
 
   if !clean
     await exec "git cherry-pick --continue", {cwd: repo}
+
+  return

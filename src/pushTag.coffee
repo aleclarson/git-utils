@@ -17,7 +17,10 @@ git.pushTag = (repo, tag, opts = {}) ->
   args = [ opts.remote or "origin", tag ]
   args.push "-f" if opts.force
 
-  try await exec "git push", args, {cwd: repo}
+  try
+    await exec "git push", args, {cwd: repo}
+    return
+
   catch err
     lines = err.message.split os.EOL
 

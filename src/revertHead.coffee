@@ -5,7 +5,10 @@ git = require "./core"
 module.exports =
 git.revertHead = (repo) ->
 
-  try await git.resetBranch repo, "HEAD^", {soft: true}
+  try
+    await git.resetBranch repo, "HEAD^", {soft: true}
+    return # TODO: return the new HEAD commit?
+
   catch err
 
     # Undo the initial commit if necessary.

@@ -16,7 +16,10 @@ git.pushStash = (repo, opts = {}) ->
   args.push "--keep-index" if opts.keepIndex
   args.push "--include-untracked" if opts.includeUntracked
 
-  try await exec "git stash", args, {cwd: repo}
+  try
+    await exec "git stash", args, {cwd: repo}
+    return
+
   catch err
 
     if /bad revision 'HEAD'/.test err.message

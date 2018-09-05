@@ -15,7 +15,10 @@ git.addTag = (repo, tag, opts = {}) ->
   args = [ tag ]
   args.push "-f" if opts.force
 
-  try await exec "git tag", args, {cwd: repo}
+  try
+    await exec "git tag", args, {cwd: repo}
+    return
+
   catch err
 
     if !opts.force

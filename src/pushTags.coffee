@@ -13,15 +13,13 @@ git.pushTags = (repo, opts = {}) ->
   assertValid repo, "string"
   assertValid opts, optionTypes
 
-  args = [
-    opts.remote or "origin"
-    "--tags"
-  ]
+  args = [ opts.remote or "origin", "--tags" ]
+  args.push "-f" if opts.force
 
-  if opts.force
-    args.push "-f"
+  try
+    await exec "git push", args, {cwd: repo}
+    return
 
-  try await exec "git push", args, {cwd: repo}
   catch err
     lines = err.message.split os.EOL
 

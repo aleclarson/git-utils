@@ -14,7 +14,10 @@ git.stageFiles = (repo, files) ->
   else if !files.length
     return
 
-  try await exec "git add", files, {cwd: repo}
+  try
+    await exec "git add --", files, {cwd: repo}
+    return
+
   catch err
 
     if /The following paths are ignored/.test err.message

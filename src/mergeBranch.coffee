@@ -35,7 +35,10 @@ git.mergeBranch = (repo, opts) ->
   if opts.strategy
     args.push "-X", opts.strategy
 
-  try await exec "git merge", args, {cwd: repo}
+  try
+    await exec "git merge", args, {cwd: repo}
+    return
+
   catch err
 
     if /Automatic merge went well/.test err.message

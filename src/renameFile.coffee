@@ -15,6 +15,7 @@ git.renameFile = (repo, oldName, newName) ->
     makeRelative(oldName),
     makeRelative(newName),
     {cwd: repo}
+  return
 
 makeRelative = (repo, file) ->
   return file if !path.isAbsolute file

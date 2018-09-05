@@ -37,10 +37,12 @@ git.pushBranch = (repo, opts = {}) ->
       "ssh -i #{opts.keyPath} -F /dev/null" +
       if opts.debug then " -vvv" else ""
 
-  try await exec "git push", args,
-    cwd: repo
-    env: env or process.env
-    listener: opts.listener
+  try
+    await exec "git push", args,
+      cwd: repo
+      env: env or process.env
+      listener: opts.listener
+    return
 
   catch err
 

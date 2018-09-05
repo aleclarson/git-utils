@@ -17,6 +17,7 @@ git.deleteBranch = (repo, branch, opts = {}) ->
     await exec "git branch -D #{branch}", {cwd: repo}
     if opts.remote
       await exec "git push #{opts.remote} --delete #{branch}", {cwd: repo}
+    return
 
   catch err
 
