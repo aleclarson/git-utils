@@ -9,7 +9,7 @@ optionTypes =
   dryRun: "boolean?"
 
 module.exports =
-git.resetFiles = (repo, files, opts = {}) ->
+git.revertFiles = (repo, files, opts = {}) ->
   assertValid repo, "string"
   assertValid files, "string|array"
   assertValid opts, optionTypes
@@ -31,5 +31,5 @@ git.resetFiles = (repo, files, opts = {}) ->
   args = [ opts.commit or "HEAD" ]
   args.push "-p" if opts.dryRun
 
-  await exec "git checkout", args, "--", files, {cwd: repo}
   # TODO: Possibly parse the 'dryRun' output?
+  await exec "git checkout", args, "--", files, {cwd: repo}
