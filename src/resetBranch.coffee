@@ -2,13 +2,18 @@
 # TODO: Test with `commit` being a non-existing branch.
 assertValid = require "assertValid"
 isValid = require "isValid"
+valido = require "valido"
 exec = require "exec"
 
 git = require "./core"
 
+ResetMode = valido do ->
+  values = ["soft", "hard", "mixed", "merge"]
+  test: (value) -> values.includes value
+  error: -> Error "Invalid reset mode"
+
 optionTypes =
-  soft: "boolean?"
-  hard: "boolean?"
+  mode: [ResetMode, "?"]
 
 module.exports =
 git.resetBranch = (repo, commit, opts) ->
@@ -25,15 +30,13 @@ git.resetBranch = (repo, commit, opts) ->
 
   if commit == null
     await exec "git update-ref -d HEAD", {cwd: repo}
-    if opts.hard
+    if opts.mode == "hard"
       await exec "git reset --hard", {cwd: repo}
+    return
 
-  else
-    commit or= "HEAD"
-    hardness =
-      if opts.hard then "--hard"
-      else if opts.soft then "--soft"
-      else "--mixed"
-
-    await exec "git reset", hardness, commit, {cwd: repo}
-    # TODO: Resolve with the new HEAD commit
+  # TODO: Resolve with the new HEAD commit
+  await exec "git reset",
+    "--" + (opts.mode or "mixed"),
+    commit or "HEAD",
+    {cwd: repo}
+  return
