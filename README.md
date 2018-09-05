@@ -80,14 +80,14 @@ You can use `git-utils/lib/commit`-style imports to avoid loading the entire lib
 
 [t1]: #addtagrepo-string-tag-string-opts-object-promisevoid
 [t2]: #deletetagrepo-string-tag-string-opts-object-promisevoid
-[t3]: #gettagsrepo-string
+[t3]: #gettagsrepo-string-opts-object-promisearray
 [t4]: #pushtagrepo-string-tag-string-opts-object-promisevoid
 [t5]: #pushtagsrepo-string-opts-object-promisevoid
 
 ### Versions
 - [getVersions][v1]: Get a sorted array of valid versions
 
-[v1]: #getversionsrepo-string
+[v1]: #getversionsrepo-string-opts-object-promisearray
 
 &nbsp;
 
