@@ -2,10 +2,15 @@
   "name": "git-utils",
   "version": "1.4.0",
   "main": "lib/index",
+  "repository": "aleclarson/git-utils",
+  "description": "Git automation for Javascript",
   "scripts": {
     "build": "coffee-build src -o lib",
     "postinstall": "npm run build"
   },
+  "files": [
+    "lib"
+  ],
   "dependencies": {
     "SortedArray": "aleclarson/SortedArray#1.0.0",
     "assertValid": "aleclarson/assertValid#1.0.0",
