@@ -4,8 +4,8 @@ exec = require "exec"
 git = require "./core"
 
 optionTypes =
-  keepIndex: "boolean?"
-  includeUntracked: "boolean?"
+  keepStaged: "boolean?"
+  keepUntracked: "boolean?"
 
 module.exports =
 git.pushStash = (repo, opts = {}) ->
@@ -13,8 +13,8 @@ git.pushStash = (repo, opts = {}) ->
   assertValid opts, optionTypes
 
   args = []
-  args.push "--keep-index" if opts.keepIndex
-  args.push "--include-untracked" if opts.includeUntracked
+  args.push "--keep-index" if opts.keepStaged
+  args.push "--include-untracked" if !opts.keepUntracked
 
   try
     await exec "git stash", args, {cwd: repo}
