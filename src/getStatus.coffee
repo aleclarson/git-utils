@@ -20,8 +20,8 @@ git.getStatus = (repo, opts = {}) ->
   else getLocalStatus repo, opts
 
 getRemoteStatus = (repo) ->
-  stdout = await exec "git status --short --branch", {cwd: repo}
-  stdout = stdout.split("\n")[0]
+  stdout = await exec "git status --short --branch --porcelain", {cwd: repo}
+  stdout = stdout.split(os.EOL)[0]
 
   findRemoteBranch = Finder /\.\.\.([^\s]+)/
   findAhead = Finder "ahead ([0-9]+)"
@@ -69,17 +69,15 @@ getLocalStatus = (repo, opts) ->
       delete file.path
 
     if (stagingStatus isnt " ") and (stagingStatus isnt "?")
-      status = statusMap[stagingStatus]
-      if not status
+      if !status = statusMap[stagingStatus]
         throw Error "Unrecognized status!"
-      files = results.staged[status] ?= []
+      files = results.staged[status] or= []
       files.push file
 
     if (workingStatus isnt " ") and (workingStatus isnt "?")
-      status = statusMap[workingStatus]
-      if not status
+      if !status = statusMap[workingStatus]
         throw Error "Unrecognized status!"
-      files = results.tracked[status] ?= []
+      files = results.tracked[status] or= []
       files.push file
 
   return results
