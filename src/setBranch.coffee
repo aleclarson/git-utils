@@ -8,6 +8,8 @@ git = require "./core"
 
 optionTypes =
   force: "boolean?"
+  ifExists: "boolean?"
+  mustExist: "boolean?"
 
 module.exports =
 git.setBranch = (repo, branch, opts = {}) ->
@@ -17,26 +19,36 @@ git.setBranch = (repo, branch, opts = {}) ->
 
   currentBranch = await git.getBranch repo
   if branch == currentBranch
-    return currentBranch
+    return branch
 
-  # The branch must be clean. (unless `opts.force` is used)
+  # Check if the branch is clean (or force was used).
   if !opts.force and !await git.isClean repo
     throw Error "The current branch has uncommitted changes!"
 
   args = [ branch ]
 
-  # The branch must exist. (unless `opts.force` is used)
+  # Check if the branch exists.
   if !await git.hasBranch repo, branch
-    if !opts.force
+
+    if opts.ifExists
+      return currentBranch
+
+    if opts.mustExist
       throw Error "Unknown branch: '#{branch}'"
+
     args.unshift "-b"
 
-  try await exec "git checkout", args, {cwd: repo}
+  try
+    await exec "git checkout", args, {cwd: repo}
+    return branch
+
   catch err
-    {message} = err
+    msg = err.message
 
     # 'git checkout' incorrectly prints to 'stderr'
-    return if message.startsWith "Switched to branch"
-    return if message.startsWith "Switched to a new branch"
+    if msg.startsWith "Switched to branch"
+      return branch
+    if msg.startsWith "Switched to a new branch"
+      return branch
 
     throw error
