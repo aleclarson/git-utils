@@ -20,7 +20,7 @@ You can use `git-utils/lib/commit`-style imports to avoid loading the entire lib
 [b1]: #addbranchrepo-string-branch-string-promisevoid
 [b2]: #deletebranchrepo-string-branch-string-opts-object-promisevoid
 [b3]: #getbranchrepo-string
-[b4]: #getbranchesrepo-string-remote-string-opts-object-promisestring
+[b4]: #getbranchesrepo-string-opts-object-promisemixed
 [b5]: #hasbranchrepo-string-branch-string-opts-object-promiseboolean
 [b6]: #mergebranchrepo-string-opts-object-promisevoid
 [b7]: #pushbranchrepo-string-opts-object-promisevoid
@@ -125,14 +125,17 @@ Get the current branch name.
 
 &nbsp;
 
-#### `getBranches(repo: string, remote?: string, opts?: Object): Promise<string[]>`
+#### `getBranches(repo: string, opts?: Object): Promise<mixed>`
 
-Get the local/remote array of branch names.
+Get an array of local/remote branch names.
 
 **Options:**
 - `raw?: boolean`
+- `remote?: string`
 
-The `raw` option skips the stdout parsing phase.
+The `raw` option changes the return value to the stdout of the `git branch` command.
+
+The `remote` option lets you inspect the branches of a remote repository.
 
 [Back to top](#readme)
 
