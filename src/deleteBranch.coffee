@@ -6,6 +6,7 @@ git = require "./core"
 
 optionTypes =
   remote: "string?"
+  remoteOnly: "boolean?"
 
 module.exports =
 git.deleteBranch = (repo, branch, opts = {}) ->
@@ -14,7 +15,8 @@ git.deleteBranch = (repo, branch, opts = {}) ->
   assertValid opts, optionTypes
 
   try
-    await exec "git branch -D #{branch}", {cwd: repo}
+    if !opts.remoteOnly
+      await exec "git branch -D #{branch}", {cwd: repo}
     if opts.remote
       await exec "git push #{opts.remote} --delete #{branch}", {cwd: repo}
     return
