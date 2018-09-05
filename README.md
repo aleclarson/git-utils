@@ -7,49 +7,87 @@ All methods return a promise.
 You can use `git-utils/lib/commit`-style imports to avoid loading the entire library.
 
 ### Commits
-- [commit](): Equivalent to `git commit -m <message>`
-- [getHead](): Get the SHA of the HEAD commit
-- [pick](): Equivalent to `git cherry-pick <commitish>`
-- [revertHead](): Undo the HEAD commit but keep its changes
+- [commit][c1]: Equivalent to `git commit -m <message>`
+- [getHead][c2]: Get the SHA of the HEAD commit
+- [pick][c3]: Equivalent to `git cherry-pick <commitish>`
+- [revertHead][c4]: Undo the HEAD commit but keep its changes
+
+[c1]: #commitrepo-string-message-string-promisestring
+[c2]: #getheadrepo-string-branch-string-opts-object-promisemixed
+[c3]: #pickrepo-string-commit-mixed-opts-object-promisevoid
+[c4]: #revertheadrepo-string-promisevoid
 
 ### Branches
-- [addBranch](): Equivalent to `git checkout -b <branch>`
-- [deleteBranch](): Equivalent to `git branch -D <branch>`
-- [getBranch](): Get the current branch name
-- [getBranches](): Get the list of branch names (local or remote)
-- [hasBranch](): Returns true if the given branch name exists
-- [mergeBranch](): Equivalent to `git merge`
-- [pushBranch](): Equivalent to `git push`
-- [resetBranch](): Equivalent to `git reset <commitish>`
-- [setBranch](): Change the current branch
+- [addBranch][b1]: Equivalent to `git checkout -b <branch>`
+- [deleteBranch][b2]: Equivalent to `git branch -D <branch>`
+- [getBranch][b3]: Get the current branch name
+- [getBranches][b4]: Get the list of branch names (local or remote)
+- [hasBranch][b5]: Returns true if the given branch name exists
+- [mergeBranch][b6]: Equivalent to `git merge`
+- [pushBranch][b7]: Equivalent to `git push`
+- [resetBranch][b8]: Equivalent to `git reset <commitish>`
+- [setBranch][b9]: Change the current branch
+
+[b1]: #addbranchrepo-string-branch-string-promisevoid
+[b2]: #deletebranchrepo-string-branch-string-opts-object-promisevoid
+[b3]: #getbranchrepo-string
+[b4]: #getbranchesrepo-string-remote-string-opts-object-promisestring
+[b5]: #hasbranchrepo-string-branch-string-opts-object-promiseboolean
+[b6]: #mergebranchrepo-string-opts-object-promisevoid
+[b7]: #pushbranchrepo-string-opts-object-promisevoid
+[b8]: #resetbranchrepo-string-commit-string-opts-object-promisevoid
+[b9]: #setbranchrepo-string-branch-string-opts-object-promisestring
 
 ### Tags
-- [addTag](): Equivalent to `git tag <tag>`
-- [deleteTag](): Equivalent to `git tag -d <tag>`
-- [getTags](): Equivalent to `git tag`
-- [pushTag](): Equivalent to `git push <remote> <tag>`
-- [pushTags](): Equivalent to `git push --tags`
+- [addTag][t1]: Equivalent to `git tag <tag>`
+- [deleteTag][t2]: Equivalent to `git tag -d <tag>`
+- [getTags][t3]: Equivalent to `git tag`
+- [pushTag][t4]: Equivalent to `git push <remote> <tag>`
+- [pushTags][t5]: Equivalent to `git push --tags`
+
+[t1]: #addtagrepo-string-tag-string-opts-object-promisevoid
+[t2]: #deletetagrepo-string-tag-string-opts-object-promisevoid
+[t3]: #gettagsrepo-string
+[t4]: #pushtagrepo-string-tag-string-opts-object-promisevoid
+[t5]: #pushtagsrepo-string-opts-object-promisevoid
 
 ### Files
-- [diff](): Equivalent to `git diff`
-- [popStash](): Equivalent to `git stash pop`
-- [pushStash](): Equivalent to `git stash`
-- [removeFiles](): Equivalent to `git rm`
-- [renameFile](): Equivalent to `git mv`
-- [resetFiles](): Equivalent to `git checkout <commitish> -- <paths>`
-- [stageFiles](): Equivalent to `git add`
-- [unstageFiles](): Equivalent to `git reset -- <paths>`
+- [diff][f1]: Equivalent to `git diff`
+- [popStash][f2]: Equivalent to `git stash pop`
+- [pushStash][f3]: Equivalent to `git stash`
+- [removeFiles][f4]: Equivalent to `git rm`
+- [renameFile][f5]: Equivalent to `git mv`
+- [resetFiles][f6]: Equivalent to `git checkout <commitish> -- <paths>`
+- [stageFiles][f7]: Equivalent to `git add`
+- [unstageFiles][f8]: Equivalent to `git reset -- <paths>`
+
+[f1]: #diffrepo-string-fromcommit-string-tocommit-string-promisearray
+[f2]: #popstashrepo-string-promisevoid
+[f3]: #pushstashrepo-string-opts-object-promisevoid
+[f4]: #removefilesrepo-string-files-mixed-opts-object-promisevoid
+[f5]: #renamefilerepo-string-oldname-string-newname-string-promisevoid
+[f6]: #revertfilesrepo-string-files-mixed-opts-object-promisestring
+[f7]: #stagefilesrepo-string-files-mixed-promisevoid
+[f8]: #unstagefilesrepo-string-files-mixed-promisevoid
 
 ### Status
-- [getStatus](): Equivalent to `git status`
-- [isClean](): Returns true if the working tree has no changes
-- [isStaged](): Returns true if staged changes exist
+- [getStatus][s1]: Equivalent to `git status`
+- [isClean][s2]: Returns true if the working tree has no changes
+- [isStaged][s3]: Returns true if staged changes exist
+
+[s1]: #getstatusrepo-string-opts-object-promisemixed
+[s2]: #iscleanrepo-string-promiseboolean
+[s3]: #isstagedrepo-string
 
 ### Remotes
-- [getRemotes](): Equivalent to `git remote`
+- [getRemotes][r1]: Equivalent to `git remote`
+
+[r1]: #getremotesrepo-string
 
 ### Versions
-- [getVersions](): Get a sorted array of valid versions
+- [getVersions][v1]: Get a sorted array of valid versions
+
+[v1]: #getversionsrepo-string
 
 &nbsp;
 
@@ -57,13 +95,13 @@ You can use `git-utils/lib/commit`-style imports to avoid loading the entire lib
 
 #### `commit(repo: string, message: string): Promise<string>`
 
-Create a commit from the staged changes.
+  Create a commit from the staged changes.
 
-The `message` can have any number of lines.
+  The `message` can have any number of lines.
 
-Resolves with the commit SHA.
+  Resolves with the commit SHA.
 
-&nbsp;
+  &nbsp;
 
 #### `getHead(repo: string, branch?: string, opts?: Object): Promise<mixed>`
 
@@ -430,4 +468,4 @@ Get the array of remote repositories, where each repository is an object like `{
 
 #### `getVersions(repo: string)`
 
-Get the *sorted* array of tags that use semantic versioning.
+  Get the *sorted* array of tags that use semantic versioning.
