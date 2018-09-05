@@ -4,34 +4,23 @@ Finder = require "finder"
 exec = require "exec"
 os = require "os"
 
-require "./getRemotes"
 git = require "./core"
 
 optionTypes =
   raw: "boolean?"
+  remote: "string?"
 
 module.exports =
-git.getBranches = (repo, remoteName, opts) ->
+git.getBranches = (repo, opts) ->
   assertValid repo, "string"
-
-  if isValid remoteName, "object"
-    opts = remoteName
-    remoteName = null
-  else
-    opts or= {}
-
-  assertValid remoteName, "string?"
   assertValid opts, optionTypes
 
-  if remoteName
-  then getRemoteBranches repo, remoteName, opts
+  if opts.remote
+  then getRemoteBranches repo, opts
   else getLocalBranches repo, opts
 
-getRemoteBranches = (repo, remoteName, opts) ->
-  remotes = await git.getRemotes repo
-  remoteUri = remotes[remoteName].push
-
-  stdout = await exec "git ls-remote --heads #{remoteUri}", {cwd: repo}
+getRemoteBranches = (repo, opts) ->
+  stdout = await exec "git ls-remote -h #{opts.remote}", {cwd: repo}
   return stdout if opts.raw
 
   findName = Finder /refs\/heads\/(.+)$/
