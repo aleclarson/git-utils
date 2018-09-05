@@ -6,17 +6,6 @@ All methods return a promise.
 
 You can use `git-utils/lib/commit`-style imports to avoid loading the entire library.
 
-### Commits
-- [commit][c1]: Equivalent to `git commit -m <message>`
-- [getHead][c2]: Get the SHA of the HEAD commit
-- [pick][c3]: Equivalent to `git cherry-pick <commitish>`
-- [revertHead][c4]: Undo the HEAD commit but keep its changes
-
-[c1]: #commitrepo-string-message-string-promisestring
-[c2]: #getheadrepo-string-branch-string-opts-object-promisemixed
-[c3]: #pickrepo-string-commit-mixed-opts-object-promisevoid
-[c4]: #revertheadrepo-string-promisevoid
-
 ### Branches
 - [addBranch][b1]: Equivalent to `git checkout -b <branch>`
 - [deleteBranch][b2]: Equivalent to `git branch -D <branch>`
@@ -38,18 +27,16 @@ You can use `git-utils/lib/commit`-style imports to avoid loading the entire lib
 [b8]: #resetbranchrepo-string-commit-string-opts-object-promisevoid
 [b9]: #setbranchrepo-string-branch-string-opts-object-promisestring
 
-### Tags
-- [addTag][t1]: Equivalent to `git tag <tag>`
-- [deleteTag][t2]: Equivalent to `git tag -d <tag>`
-- [getTags][t3]: Equivalent to `git tag`
-- [pushTag][t4]: Equivalent to `git push <remote> <tag>`
-- [pushTags][t5]: Equivalent to `git push --tags`
+### Commits
+- [commit][c1]: Equivalent to `git commit -m <message>`
+- [getHead][c2]: Get the SHA of the HEAD commit
+- [pick][c3]: Equivalent to `git cherry-pick <commitish>`
+- [revertHead][c4]: Undo the HEAD commit but keep its changes
 
-[t1]: #addtagrepo-string-tag-string-opts-object-promisevoid
-[t2]: #deletetagrepo-string-tag-string-opts-object-promisevoid
-[t3]: #gettagsrepo-string
-[t4]: #pushtagrepo-string-tag-string-opts-object-promisevoid
-[t5]: #pushtagsrepo-string-opts-object-promisevoid
+[c1]: #commitrepo-string-message-string-promisestring
+[c2]: #getheadrepo-string-branch-string-opts-object-promisemixed
+[c3]: #pickrepo-string-commit-mixed-opts-object-promisevoid
+[c4]: #revertheadrepo-string-promisevoid
 
 ### Files
 - [diff][f1]: Equivalent to `git diff`
@@ -70,6 +57,11 @@ You can use `git-utils/lib/commit`-style imports to avoid loading the entire lib
 [f7]: #stagefilesrepo-string-files-mixed-promisevoid
 [f8]: #unstagefilesrepo-string-files-mixed-promisevoid
 
+### Remotes
+- [getRemotes][r1]: Equivalent to `git remote`
+
+[r1]: #getremotesrepo-string
+
 ### Status
 - [getStatus][s1]: Equivalent to `git status`
 - [isClean][s2]: Returns true if the working tree has no changes
@@ -79,10 +71,18 @@ You can use `git-utils/lib/commit`-style imports to avoid loading the entire lib
 [s2]: #iscleanrepo-string-promiseboolean
 [s3]: #isstagedrepo-string
 
-### Remotes
-- [getRemotes][r1]: Equivalent to `git remote`
+### Tags
+- [addTag][t1]: Equivalent to `git tag <tag>`
+- [deleteTag][t2]: Equivalent to `git tag -d <tag>`
+- [getTags][t3]: Equivalent to `git tag`
+- [pushTag][t4]: Equivalent to `git push <remote> <tag>`
+- [pushTags][t5]: Equivalent to `git push --tags`
 
-[r1]: #getremotesrepo-string
+[t1]: #addtagrepo-string-tag-string-opts-object-promisevoid
+[t2]: #deletetagrepo-string-tag-string-opts-object-promisevoid
+[t3]: #gettagsrepo-string
+[t4]: #pushtagrepo-string-tag-string-opts-object-promisevoid
+[t5]: #pushtagsrepo-string-opts-object-promisevoid
 
 ### Versions
 - [getVersions][v1]: Get a sorted array of valid versions
@@ -92,66 +92,6 @@ You can use `git-utils/lib/commit`-style imports to avoid loading the entire lib
 &nbsp;
 
 ## API Reference
-
-#### `commit(repo: string, message: string): Promise<string>`
-
-Create a commit from the staged changes.
-
-The `message` can have any number of lines.
-
-Resolves with the commit SHA.
-
-[Back to top](#readme)
-
-&nbsp;
-
-#### `getHead(repo: string, branch?: string, opts?: Object): Promise<mixed>`
-
-Resolves with the SHA of the HEAD commit.
-
-If no `branch` is given, use the current branch.
-
-**Options:**
-- `remote?: string`
-- `message?: boolean`
-
-The `remote` option lets you inspect a remote repository.
-When undefined, the local repository is used.
-
-The `message` option causes the resolved value to become
-`{id, message}` where `id` is the SHA and `message` is the commit message.
-
-[Back to top](#readme)
-
-[Back to top](#readme)
-
-&nbsp;
-
-#### `pick(repo: string, commit: mixed, opts?: Object): Promise<void>`
-
-Perform a cherry-pick.
-
-The `commit` argument can be a SHA string or a `{from, to}` object
-where both `from` and `to` are SHA strings.
-
-**Options:**
-- `strategy: string`
-
-The `strategy` option must be either `"ours"` or `"theirs"`. This option
-is used to auto-resolve merge conflicts.
-
-[Back to top](#readme)
-
-&nbsp;
-
-#### `revertHead(repo: string): Promise<void>`
-
-Undo the last commit, but keep the changes in the staging area.
-
-[Back to top](#readme)
-
-&nbsp;
----
 
 #### `addBranch(repo: string, branch: string): Promise<void>`
 
@@ -307,78 +247,60 @@ The `mustExist` option will throw an error if the given `branch` does *not* exis
 &nbsp;
 ---
 
-#### `addTag(repo: string, tag: string, opts?: Object): Promise<void>`
+#### `commit(repo: string, message: string): Promise<string>`
 
-Create a tag for the current HEAD commit.
+Create a commit from the staged changes.
 
-**Options:**
-- `force?: boolean`
+The `message` can have any number of lines.
 
-The `force` option lets you overwrite an existing tag with the same name.
-
-[Back to top](#readme)
-
-&nbsp;
-
-#### `deleteTag(repo: string, tag: string, opts?: Object): Promise<void>`
-
-Delete a local/remote tag.
-
-**Options:**
-- `remote?: string`
-- `remoteOnly?: boolean`
-
-The `remote` option lets you delete the given `tag` from a remote repository.
-
-The `remoteOnly` option lets you delete the remote tag only. By default, both the local and remote tags are deleted.
+Resolves with the commit SHA.
 
 [Back to top](#readme)
 
 &nbsp;
 
-#### `getTags(repo: string, opts?: Object): Promise<Array>`
+#### `getHead(repo: string, branch?: string, opts?: Object): Promise<mixed>`
 
-Get an array of local/remote tag names.
+Resolves with the SHA of the HEAD commit.
+
+If no `branch` is given, use the current branch.
 
 **Options:**
 - `remote?: string`
-- `commits?: boolean`
+- `message?: boolean`
 
-The `remote` option lets you fetch tags from a remote repository.
+The `remote` option lets you inspect a remote repository.
+When undefined, the local repository is used.
 
-The `commits` option changes the return value to an array of `{tag: string, commit: string}` objects.
+The `message` option causes the resolved value to become
+`{id, message}` where `id` is the SHA and `message` is the commit message.
+
+[Back to top](#readme)
 
 [Back to top](#readme)
 
 &nbsp;
 
-#### `pushTag(repo: string, tag: string, opts?: Object): Promise<void>`
+#### `pick(repo: string, commit: mixed, opts?: Object): Promise<void>`
 
-Push a local tag to a remote repository.
+Perform a cherry-pick.
+
+The `commit` argument can be a SHA string or a `{from, to}` object
+where both `from` and `to` are SHA strings.
 
 **Options:**
-- `force?: boolean`
-- `remote?: string`
+- `strategy: string`
 
-The `force` option lets you overwrite an existing remote tag of the same name.
-
-The `remote` option lets you choose the remote repository to push to. Defaults to `"origin"`.
+The `strategy` option must be either `"ours"` or `"theirs"`. This option
+is used to auto-resolve merge conflicts.
 
 [Back to top](#readme)
 
 &nbsp;
 
-#### `pushTags(repo: string, opts?: Object): Promise<void>`
+#### `revertHead(repo: string): Promise<void>`
 
-Push all local tags to a remote repository.
-
-**Options:**
-- `force?: boolean`
-- `remote?: string`
-
-The `force` option lets you overwrite any existing remote tags that clash with one of the local tags.
-
-The `remote` option lets you choose the remote repository to push to. Defaults to `"origin"`.
+Undo the last commit, but keep the changes in the staging area.
 
 [Back to top](#readme)
 
@@ -488,6 +410,15 @@ The `files` argument must be a file path or an array of file paths.
 &nbsp;
 ---
 
+#### `getRemotes(repo: string): Promise<Array>`
+
+Get the array of remote repositories, where each repository is an object like `{push: string, fetch: string}`.
+
+[Back to top](#readme)
+
+&nbsp;
+---
+
 #### `getStatus(repo: string, opts?: Object): Promise<mixed>`
 
 Get the status of the current branch.
@@ -533,9 +464,78 @@ Resolves to true if the repository has staged changes.
 &nbsp;
 ---
 
-#### `getRemotes(repo: string): Promise<Array>`
+#### `addTag(repo: string, tag: string, opts?: Object): Promise<void>`
 
-Get the array of remote repositories, where each repository is an object like `{push: string, fetch: string}`.
+Create a tag for the current HEAD commit.
+
+**Options:**
+- `force?: boolean`
+
+The `force` option lets you overwrite an existing tag with the same name.
+
+[Back to top](#readme)
+
+&nbsp;
+
+#### `deleteTag(repo: string, tag: string, opts?: Object): Promise<void>`
+
+Delete a local/remote tag.
+
+**Options:**
+- `remote?: string`
+- `remoteOnly?: boolean`
+
+The `remote` option lets you delete the given `tag` from a remote repository.
+
+The `remoteOnly` option lets you delete the remote tag only. By default, both the local and remote tags are deleted.
+
+[Back to top](#readme)
+
+&nbsp;
+
+#### `getTags(repo: string, opts?: Object): Promise<Array>`
+
+Get an array of local/remote tag names.
+
+**Options:**
+- `remote?: string`
+- `commits?: boolean`
+
+The `remote` option lets you fetch tags from a remote repository.
+
+The `commits` option changes the return value to an array of `{tag: string, commit: string}` objects.
+
+[Back to top](#readme)
+
+&nbsp;
+
+#### `pushTag(repo: string, tag: string, opts?: Object): Promise<void>`
+
+Push a local tag to a remote repository.
+
+**Options:**
+- `force?: boolean`
+- `remote?: string`
+
+The `force` option lets you overwrite an existing remote tag of the same name.
+
+The `remote` option lets you choose the remote repository to push to. Defaults to `"origin"`.
+
+[Back to top](#readme)
+
+&nbsp;
+
+#### `pushTags(repo: string, opts?: Object): Promise<void>`
+
+Push all local tags to a remote repository.
+
+**Options:**
+- `force?: boolean`
+- `remote?: string`
+
+The `force` option lets you overwrite any existing remote tags that clash with one of the local tags.
+
+The `remote` option lets you choose the remote repository to push to. Defaults to `"origin"`.
 
 [Back to top](#readme)
 
