@@ -1,3 +1,4 @@
+# TODO: Add `remote` option
 assertValid = require "assertValid"
 exec = require "exec"
 os = require "os"
