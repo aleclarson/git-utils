@@ -336,9 +336,17 @@ The `remoteOnly` option lets you delete the remote tag only. By default, both th
 
 &nbsp;
 
-#### `getTags(repo: string)`
+#### `getTags(repo: string, opts?: Object): Promise<Array>`
 
-Get the array of local tags.
+Get an array of local/remote tag names.
+
+**Options:**
+- `remote?: string`
+- `commits?: boolean`
+
+The `remote` option lets you fetch tags from a remote repository.
+
+The `commits` option changes the return value to an array of `{tag: string, commit: string}` objects.
 
 [Back to top](#readme)
 
@@ -516,7 +524,7 @@ Resolves to true if the repository has no uncommitted changes.
 
 &nbsp;
 
-#### `isStaged(repo: string)`
+#### `isStaged(repo: string): Promise<boolean>`
 
 Resolves to true if the repository has staged changes.
 
@@ -525,7 +533,7 @@ Resolves to true if the repository has staged changes.
 &nbsp;
 ---
 
-#### `getRemotes(repo: string)`
+#### `getRemotes(repo: string): Promise<Array>`
 
 Get the array of remote repositories, where each repository is an object like `{push: string, fetch: string}`.
 
@@ -534,8 +542,13 @@ Get the array of remote repositories, where each repository is an object like `{
 &nbsp;
 ---
 
-#### `getVersions(repo: string)`
+#### `getVersions(repo: string, opts?: Object): Promise<Array>`
 
 Get the *sorted* array of tags that use semantic versioning.
+
+**Options:**
+- `remote?: string`
+
+The `remote` option lets you fetch tags that use semantic versioning from a remote repository.
 
 [Back to top](#readme)
