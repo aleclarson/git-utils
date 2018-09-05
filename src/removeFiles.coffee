@@ -9,7 +9,7 @@ optionTypes =
   recursive: "boolean?"
 
 module.exports =
-git.remove = (repo, files, opts = {}) ->
+git.removeFiles = (repo, files, opts = {}) ->
   assertValid repo, "string"
   assertValid files, "string|array"
   assertValid opts, optionTypes
@@ -18,4 +18,5 @@ git.remove = (repo, files, opts = {}) ->
   args.push "-r" if opts.recursive
   args.push "--cached" if opts.cached
 
-  await exec "git rm", args.concat(files), {cwd: repo}
+  await exec "git rm", args, "--", files, {cwd: repo}
+  return
