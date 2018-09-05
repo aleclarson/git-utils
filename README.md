@@ -28,6 +28,7 @@ You can use `git-utils/lib/commit`-style imports to avoid loading the entire lib
 [b9]: #setbranchrepo-string-branch-string-opts-object-promisestring
 
 ### Commits
+- [clone][c5]: Equivalent to `git clone`
 - [commit][c1]: Equivalent to `git commit -m <message>`
 - [getHead][c2]: Get the SHA of the HEAD commit
 - [pick][c3]: Equivalent to `git cherry-pick <commitish>`
@@ -37,6 +38,7 @@ You can use `git-utils/lib/commit`-style imports to avoid loading the entire lib
 [c2]: #getheadrepo-string-branch-string-opts-object-promisemixed
 [c3]: #pickrepo-string-commit-mixed-opts-object-promisevoid
 [c4]: #revertheadrepo-string-promisevoid
+[c5]: #clonerepo-string-src-string-opts-object-promise-void
 
 ### Files
 - [diff][f1]: Equivalent to `git diff`
@@ -249,6 +251,25 @@ The `mustExist` option will throw an error if the given `branch` does *not* exis
 
 &nbsp;
 ---
+
+#### `clone(repo: string, src: string, opts?: Object): Promise<void>`
+
+Clone a local/remote repository.
+
+The `src` argument can be a URL or an absolute path to a local directory.
+
+**Options:**
+- `dest?: string`
+- `depth?: number`
+- `branch?: string`
+
+The `dest` option lets you choose the local path to the cloned repository.
+
+The `depth` option lets you create a shallow clone.
+
+The `branch` option lets you choose which branch to checkout.
+
+&nbsp;
 
 #### `commit(repo: string, message: string): Promise<string>`
 
