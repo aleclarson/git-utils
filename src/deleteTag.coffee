@@ -5,6 +5,7 @@ git = require "./core"
 
 optionTypes =
   remote: "string?"
+  remoteOnly: "boolean?"
 
 module.exports =
 git.deleteTag = (repo, tag, opts = {}) ->
@@ -12,6 +13,8 @@ git.deleteTag = (repo, tag, opts = {}) ->
   assertValid tag, "string"
   assertValid opts, optionTypes
 
-  await exec "git tag -d #{tag}", {cwd: repo}
+  if !opts.remoteOnly
+    await exec "git tag -d #{tag}", {cwd: repo}
   if opts.remote
     await exec "git push #{opts.remote} :#{tag}", {cwd: repo}
+  return
