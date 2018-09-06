@@ -1,4 +1,4 @@
-# git-utils v2.1.0
+# git-utils v2.2.0
 
 Lightweight `git` automation for Javascript
 
