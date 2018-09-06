@@ -38,7 +38,7 @@ You can use `git-utils/lib/commit`-style imports to avoid loading the entire lib
 [c2]: #getheadrepo-string-branch-string-opts-object-promisemixed
 [c3]: #pickrepo-string-commit-mixed-opts-object-promisevoid
 [c4]: #revertheadrepo-string-promisevoid
-[c5]: #clonerepo-string-src-string-opts-object-promise-void
+[c5]: #clonerepo-string-src-string-opts-object-promisevoid
 
 ### Files
 - [diff][f1]: Equivalent to `git diff`
